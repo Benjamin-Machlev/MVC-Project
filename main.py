@@ -6,9 +6,6 @@ from MovieView.movieView import MovieView
 from MovieController.movieController import MovieController
 
 
-# יישום עיצוב Material Design
-apply_stylesheet(app, theme='dark_blue.xml')
-
 def main():
     app = QApplication([])
     with open("MovieView\style.qss", "r") as style_file:
