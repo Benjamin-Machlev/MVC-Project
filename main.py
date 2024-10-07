@@ -1,7 +1,12 @@
+from PySide6.QtWidgets import QApplication, QPushButton
+from qt_material import apply_stylesheet
 
+app = QApplication([])
 
-def main():
-    print("Hello World!")
-    
-if __name__ == "__main__":
-        main()
+# יישום עיצוב Material Design
+apply_stylesheet(app, theme='dark_blue.xml')
+
+button = QPushButton("Click Me")
+button.show()
+
+app.exec()
