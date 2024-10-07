@@ -2,73 +2,86 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtCore import *
+from MovieView.addMovieView import AddMovieForm
 
 class MovieView(QMainWindow):
     def __init__(self, model):
         super().__init__()
+        self.model = model
+        
 
         self.setWindowTitle('YTS.mx Like UI')
         self.setGeometry(400, 100, 800, 600)
 
-        # יצירת תפריט עליון
-        self.create_top_bar()
+        self.init_ui()
 
-        # יצירת תוכן מרכזי עם רשימת סרטים
-        self.create_movie_list()
-
-        # יצירת אזור תחתון עם קרדיטים או מידע נוסף
-        self.create_footer()
-
-        # הגדרת פריסה סופית לחלון
+        # Set final layout for the window
         central_widget = QWidget(self)
         main_layout = QVBoxLayout(central_widget)
 
-        # הוספת תפריט עליון
+        # Add top menu bar
         main_layout.addLayout(self.top_bar_layout)
 
-        # הוספת תוכן עם גלילה
+        # Add content with scrolling
         scroll_area = QScrollArea(self)
         scroll_area.setWidget(self.movie_widget)
         scroll_area.setWidgetResizable(True)
         main_layout.addWidget(scroll_area)
 
-        # הוספת אזור תחתון
+        # Add bottom area
         main_layout.addLayout(self.footer_layout)
 
         self.setCentralWidget(central_widget)
 
         # Show the window maximized
         self.showMaximized()
+        
+    def init_ui(self):
+        self.create_top_bar()
+        self.create_movie_list()
+        self.create_footer()
+        
+        #self.setCentralWidget(self.movie_widget)
 
     def create_top_bar(self):
-        # פריסת תפריט עליון
+        # Layout for top menu bar
         self.top_bar_layout = QHBoxLayout()
         self.top_bar_layout.setContentsMargins(20, 20, 20, 20)
 
-        # כותרת האתר
+        # Website title
         site_title = QLabel("YTS.mx")
         site_title.setObjectName("siteTitle")
         self.top_bar_layout.addWidget(site_title)
 
         self.top_bar_layout.addStretch(1)
 
-        # שדה של קלט עבור החיפוש
+        # Input field for search
         search_input = QLineEdit()
         search_input.setPlaceholderText("Search movies...")
         self.top_bar_layout.addWidget(search_input)
         
-        # כפתור חיפוש
+        # Search button
         search_button = QPushButton("Search")
         search_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.top_bar_layout.addWidget(search_button)
 
-        # הוספת מרווח גמיש אחרי שדה החיפוש וכפתור החיפוש
+        # Add flexible space after search input and button
         self.top_bar_layout.addStretch(1)
 
-        # כפתור הוספה
+        # Add button
         add_button = QPushButton("Add")
         add_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.top_bar_layout.addWidget(add_button)
+        # Connect the add button to the function that shows the add movie form
+        add_button.clicked.connect(self.show_add_movie_form)
+        
+
+    def show_add_movie_form(self):
+        # Create a new window for adding a movie
+        
+        print("Adding movie 1111")
+        self.add_movie_view = AddMovieForm(self)
+        self.setCentralWidget(self.add_movie_view)
 
     def smooth_scroll_to_row(self, table, row):
 
@@ -104,7 +117,7 @@ class MovieView(QMainWindow):
         movie_table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         # Add movie frames with buttons
-        for i in range(50):
+        for i in range(24):
             movie_frame = self.create_movie_frame(f"Movie {i + 1}")
             row = i // 4
             col = i % 4
@@ -132,12 +145,13 @@ class MovieView(QMainWindow):
         self.movie_widget = movie_table
 
     def create_movie_frame(self, movie_name):
-        # יצירת ווידג'ט עבור סרט בודד
+        # Create widget for a single movie
         movie_widget = QWidget()
         movie_layout = QVBoxLayout(movie_widget)
 
-        # תמונה ממוזערת של הסרט ככפתור לחיץ
+        # Thumbnail image of the movie as a clickable button
         poster_button = QPushButton()
+        poster_button.setCursor(Qt.CursorShape.PointingHandCursor)
         pixmap = QPixmap(r"C:\Users\melon\Desktop\MVC - Project\test.jpg")
         if not pixmap.isNull():
             # Set a fixed size for the poster button
@@ -155,13 +169,13 @@ class MovieView(QMainWindow):
 
         movie_layout.addWidget(poster_button)
 
-        # שם הסרט
+        # Movie title
         movie_title = QLabel(movie_name)
         movie_title.setStyleSheet("font-size: 18px; color: #ffffff;")
         movie_title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         movie_layout.addWidget(movie_title)
 
-        # שנת הסרט
+        # Movie year
         year = "2024"  # Example year
         movie_year = QLabel(year)
         movie_year.setStyleSheet("font-size: 14px; color: #cccccc;")
@@ -171,13 +185,13 @@ class MovieView(QMainWindow):
         return movie_widget
 
     def create_footer(self):
-        # פריסת אזור תחתון
+        # Layout for bottom area
         self.footer_layout = QHBoxLayout()
 
-        # קרדיטים או מידע נוסף
+        # Credits or additional information
         footer_label = QLabel("© 2024 YTS.mx Example")
         footer_label.setObjectName("footerLabel")
         self.footer_layout.addWidget(footer_label)
 
-        # יישור הקרדיט למרכז
+        # Align the credit to the center
         self.footer_layout.addStretch(1)
