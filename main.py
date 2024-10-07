@@ -8,7 +8,7 @@ from MovieController.movieController import MovieController
 
 def main():
     app = QApplication([])
-    with open("MovieView\style.qss", "r") as style_file:
+    with open(r"MovieView\style.qss", "r") as style_file:
         app.setStyleSheet(style_file.read()) 
 
     model = MovieModel()
