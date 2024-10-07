@@ -1,7 +1,8 @@
 import sys
-from PySide6.QtWidgets import *
-from PySide6.QtGui import *
-from PySide6.QtCore import *
+from PySide6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
+                               QLabel, QLineEdit, QPushButton, QTableWidget, QHeaderView)
+from PySide6.QtGui import QPixmap
+from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve
 
 class MovieView(QMainWindow):
     def __init__(self, model):
@@ -138,7 +139,7 @@ class MovieView(QMainWindow):
 
         # תמונה ממוזערת של הסרט ככפתור לחיץ
         poster_button = QPushButton()
-        pixmap = QPixmap(r"C:\Users\melon\Desktop\MVC - Project\test.jpg")
+        pixmap = QPixmap(r"C:\Users\User\source\repos\MVC - Project\test.jpg")
         if not pixmap.isNull():
             # Set a fixed size for the poster button
             poster_button.setFixedSize(220, 325)  # Adjust the size as needed
