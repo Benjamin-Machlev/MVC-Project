@@ -1,5 +1,17 @@
 QWidget {
-    background-color: #2a110e0e;
+    background-color: #000000;
+}
+
+QWidget#centerWidget {
+    background: url(https://img.yts.mx/assets/images/movies/the_wild_robot_2024/background.jpg) no-repeat center center;
+}
+
+QWidget#topBarWidget {
+    background-color: #1c1c1c; 
+}
+
+QWidget#footerWidget {
+    background-color: #1c1c1c; 
 }
 
 QMainWindow {
@@ -10,6 +22,7 @@ QLabel#siteTitle {
     font-size: 30px;
     font-weight: bold;
     color: #199d26;
+    background-color: #1c1c1c;
 }
 
 QLabel#movieTitle {
@@ -19,7 +32,8 @@ QLabel#movieTitle {
 
 QLabel#footerLabel {
     font-size: 12px;
-    color: #000000;
+    color: #ffffff;
+    background-color: #1c1c1c;
 }
 
 QPushButton {
@@ -51,9 +65,7 @@ QPushButton#movieframe:hover {
     opacity: 1; /* Reduce transparency */
 }
 
-
-
-QLineEdit {
+QLineEdit { /* Changed from QLineEdit# to QLineEdit */
     padding: 5px 90px;
     background-color: #ffffff;
     color: #000000;
@@ -77,8 +89,6 @@ QLineEdit#addMovieInput {
     font-size: 15px;
 }
 
-
-
 QScrollBar:vertical {
     border: none;
     background: #f0f0f0;
@@ -101,4 +111,6 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: #f0f0f0;
 }
 
-
+QFrame#bottom_line {
+    border-bottom: 0.5px solid #6b6e6b; /* Added missing semicolon */
+}
