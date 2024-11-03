@@ -114,3 +114,98 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 QFrame#bottom_line {
     border-bottom: 0.5px solid #6b6e6b; /* Added missing semicolon */
 }
+
+QLineEdit, QTextEdit, QComboBox {
+    color: #ffffff; /* White text */
+    background-color: #333333; /* Dark grey background */
+    border: 1px solid #555555;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+QPushButton {
+    background-color: #32c622; 
+    color: white;
+    padding: 7px 16px;
+    font-size: 15px;
+    border-radius: 17px;
+    border: 1px solid #000000;
+}
+
+QPushButton:hover {
+    background-color: #9aee91;
+}
+
+QWidget {
+    background-color: #1c1c1c; /* Dark background for all widgets */
+    color: #ffffff; /* White text for all widgets */
+}
+
+QLineEdit, QTextEdit {
+    background-color: #333333; /* Slightly lighter dark background for input fields */
+    border: 1px solid #555555;
+    border-radius: 4px;
+    padding: 5px;
+    color: #ffffff; /* Ensuring text is visible */
+}
+
+QComboBox, QListWidget {
+    background-color: #333333; /* Slightly lighter dark background for dropdowns and lists */
+    border: 1px solid #555555;
+    border-radius: 4px;
+    color: #ffffff; /* White text for dropdowns and list items */
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px; /* Width of the dropdown button */
+    border-left: 1px solid #555555; /* Separating line for the dropdown button */
+}
+
+QComboBox::down-arrow {
+    image: url("path/to/your/arrow/image.png"); /* Replace with your arrow image path */
+    width: 10px;
+    height: 10px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #333333; /* Background for dropdown list */
+    border-radius: 4px;
+    selection-background-color: #555555; /* Background color for selected item */
+    selection-color: #ffffff; /* Text color for selected item */
+}
+
+QListWidget {
+    color: #ffffff;
+}
+
+QListWidget::item {
+    padding: 5px; /* Padding around list items */
+}
+
+QListWidget::item:selected {
+    background-color: #555555; /* Background color for selected list items */
+}
+
+QPushButton {
+    background-color: #32c622; /* Green background for buttons */
+    color: #ffffff; /* White text for buttons */
+    border: none;
+    border-radius: 4px;
+    padding: 7px 15px;
+}
+
+QPushButton:hover {
+    background-color: #3af23a; /* Lighter green for hover state */
+}
+
+QPushButton:pressed {
+    background-color: #299a21; /* Darker green for pressed state */
+}
+
+/* Ensure the layout and widgets are spaced adequately */
+* {
+    margin: 5px;
+    padding: 3px;
+}
