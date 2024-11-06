@@ -108,7 +108,6 @@ class MovieView(QMainWindow):
 
         self.stacked_widget.addWidget(self.movie_list_widget)
         self.stacked_widget.addWidget(self.add_movie_form_widget)
-        self.stacked_widget.addWidget(self.singel_movie_view)
 
         self.main_layout.addWidget(self.stacked_widget)
 
@@ -129,6 +128,7 @@ class MovieView(QMainWindow):
 
     def show_movie(self, movie):
         self.singel_movie_view.set_movie(movie)
+        self.stacked_widget.addWidget(self.singel_movie_view)
         self.stacked_widget.setCurrentWidget(self.singel_movie_view)
 
 
@@ -162,7 +162,6 @@ class MovieView(QMainWindow):
         outer_layout = QVBoxLayout(self.movie_list_widget)
         outer_layout.setContentsMargins(0, 0, 0, 0)
         
-        # יצירת ה-ScrollArea
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -171,7 +170,6 @@ class MovieView(QMainWindow):
         content_layout = QVBoxLayout(content_widget)
         content_layout.setContentsMargins(20, 20, 20, 20)
         
-        # יצירת הרשת של הסרטים
         grid_layout = QGridLayout()
         grid_layout.setSpacing(20)
         
@@ -181,17 +179,10 @@ class MovieView(QMainWindow):
             movie_frame = self.create_movie_frame(movie)
             grid_layout.addWidget(movie_frame, row, col, alignment=Qt.AlignCenter)
         
-        # הוספת spacer בתחתית הרשת כדי שהתוכן יהיה מיושר לחלק העליון
         grid_layout.setRowStretch(grid_layout.rowCount(), 1)
-        
-        # הוספת הרשת לתוך ה-content layout
         content_layout.addLayout(grid_layout)
         content_layout.addStretch()
-        
-        # הגדרת ה-content widget כ-widget של ה-ScrollArea
-        scroll_area.setWidget(content_widget)
-        
-        # הוספת ה-ScrollArea ל-outer layout
+        scroll_area.setWidget(content_widget)      
         outer_layout.addWidget(scroll_area)
 
         
