@@ -12,7 +12,8 @@ from PySide6.QtWidgets import (
     QStackedWidget,  
     QFrame,
     QSpacerItem,
-    QGridLayout
+    QGridLayout,
+    QScrollArea
 )
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QSize
@@ -94,7 +95,6 @@ class MovieView(QMainWindow):
         self.showMaximized()
 
 
-
     def init_ui(self):
         self.create_top_bar()
         self.main_layout.addWidget(self.top_bar_widget)
@@ -118,6 +118,19 @@ class MovieView(QMainWindow):
         self.create_footer()
 
         self.main_layout.setStretch(2, 0)
+
+
+
+    def show_movie_list(self):
+        self.stacked_widget.setCurrentWidget(self.movie_list_widget)
+
+    def show_add_movie_form(self):
+        self.stacked_widget.setCurrentWidget(self.add_movie_form_widget) 
+
+    def show_movie(self, movie):
+        self.singel_movie_view.set_movie(movie)
+        self.stacked_widget.setCurrentWidget(self.singel_movie_view)
+
 
     def create_top_bar(self):
         self.top_bar_widget = QWidget(self)
@@ -146,14 +159,21 @@ class MovieView(QMainWindow):
 
     def create_movie_list(self, movies):
         self.movie_list_widget = QWidget(self)
-        self.movie_list_layout = QVBoxLayout(self.movie_list_widget)
+        outer_layout = QVBoxLayout(self.movie_list_widget)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
         
-        top_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        self.movie_list_layout.addItem(top_spacer)
+        # יצירת ה-ScrollArea
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(20, 20, 20, 20)
         
+        # יצירת הרשת של הסרטים
         grid_layout = QGridLayout()
-        grid_layout.setSpacing(20) 
-        #self.movie_list_layout.setContentsMargins(0, 0, 0, 0)
+        grid_layout.setSpacing(20)
         
         for index, movie in enumerate(movies):
             row = index // 4
@@ -161,14 +181,25 @@ class MovieView(QMainWindow):
             movie_frame = self.create_movie_frame(movie)
             grid_layout.addWidget(movie_frame, row, col, alignment=Qt.AlignCenter)
         
-        self.movie_list_layout.addLayout(grid_layout)
+        # הוספת spacer בתחתית הרשת כדי שהתוכן יהיה מיושר לחלק העליון
+        grid_layout.setRowStretch(grid_layout.rowCount(), 1)
+        
+        # הוספת הרשת לתוך ה-content layout
+        content_layout.addLayout(grid_layout)
+        content_layout.addStretch()
+        
+        # הגדרת ה-content widget כ-widget של ה-ScrollArea
+        scroll_area.setWidget(content_widget)
+        
+        # הוספת ה-ScrollArea ל-outer layout
+        outer_layout.addWidget(scroll_area)
+
+        
 
     def create_movie_frame(self, movie):
         frame = QFrame()
         frame.setFixedSize(100, 150)
-        layout = QVBoxLayout(frame)
-        #layout.setContentsMargins(0, 0, 0, 0)  # ביטול רווחים פנימיים בתוך המסגרת
-        #layout.setSpacing(8) 
+        layout = QVBoxLayout(frame) 
         
         image_button = QPushButton()
         image_button.setIcon(QPixmap(movie.image)) 
@@ -194,12 +225,5 @@ class MovieView(QMainWindow):
 
         self.main_layout.addWidget(footer_widget)
 
-    def show_add_movie_form(self):
-        self.stacked_widget.setCurrentWidget(self.add_movie_form_widget) 
 
-    def show_movie_list(self):
-        self.stacked_widget.setCurrentWidget(self.movie_list_widget)
-
-    def show_movie(self, movie):
-        self.stacked_widget.setCurrentWidget(self.singel_movie_view)
 
