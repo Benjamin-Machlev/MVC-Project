@@ -68,12 +68,6 @@ class MovieView(QMainWindow):
             "Positive", r"C:\Users\melon\Desktop\MVC - Project\test.jpg"),
         Movie(15, "The Departed", "Martin Scorsese", 2006, "Crime, Drama, Thriller", 8.5, 151, 
             "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.", 
-            "Positive", r"C:\Users\melon\Desktop\MVC - Project\test.jpg"),
-        Movie(15, "The Departed", "Martin Scorsese", 2006, "Crime, Drama, Thriller", 8.5, 151, 
-            "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.", 
-            "Positive", r"C:\Users\melon\Desktop\MVC - Project\test.jpg"),
-        Movie(15, "The Departed", "Martin Scorsese", 2006, "Crime, Drama, Thriller", 8.5, 151, 
-            "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.", 
             "Positive", r"C:\Users\melon\Desktop\MVC - Project\test.jpg")]
 
     def __init__(self, model):
