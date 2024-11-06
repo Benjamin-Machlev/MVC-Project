@@ -1,6 +1,6 @@
 class Movie:
     def __init__(self,movieID, title, director, release_year, genre, rating,
-                 runtime, description, response, image):
+                 runtime, description, responses, image):
         self.movieID = movieID
         self.title = title
         self.director = director
@@ -9,7 +9,7 @@ class Movie:
         self.rating = rating
         self.runtime = runtime 
         self.description = description
-        self.response = response
+        self.responses = responses
         self.image = image
 
     def __str__(self):

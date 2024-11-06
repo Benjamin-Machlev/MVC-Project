@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QSize
-from MovieView.singelMovieView import SingleMovie
+from MovieView.singelMovieView import SingleMovieView
 from MovieView.addMovieView import AddMovieForm 
 from movie import Movie
 
@@ -104,7 +104,7 @@ class MovieView(QMainWindow):
         self.stacked_widget.setContentsMargins(0, 0, 0, 0)
         self.create_movie_list(movies=self.movies)
         self.add_movie_form_widget = AddMovieForm(self)
-        self.singel_movie_view = SingleMovie(self)
+        self.singel_movie_view = SingleMovieView(self)
 
         self.stacked_widget.addWidget(self.movie_list_widget)
         self.stacked_widget.addWidget(self.add_movie_form_widget)
