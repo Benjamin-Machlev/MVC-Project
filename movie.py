@@ -1,4 +1,3 @@
-from rating import Rating
 class Movie:
     def __init__(self,movieID, title, director, release_year, genre, rating,
                  runtime, description, response, image):
