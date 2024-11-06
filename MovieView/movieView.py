@@ -183,24 +183,23 @@ class MovieView(QMainWindow):
 
     def create_movie_frame(self, movie):
         frame = QFrame()
-        frame.setFixedSize(220, 325)
-        layout = QVBoxLayout(frame) 
+        frame.setFixedSize(220, 360)  # התאמה קלה לגובה כדי לאפשר מקום לטקסט
+        layout = QVBoxLayout(frame)
         
         image_button = QPushButton()
-        image_button.setStyleSheet("border: 5px solid;")
-        image_button.setIcon(QPixmap(movie.image)) 
-        image_button.setIconSize(QSize(210, 315))  
-        image_button.setFixedSize(QSize(210, 315))
-        image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))  
+        #image_button.setStyleSheet("border: 5px solid;")
+        image_button.setIcon(QPixmap(movie.image))
+        image_button.setIconSize(QSize(200, 315))
+        image_button.setFixedSize(QSize(200, 315))
+        image_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))
 
         title_label = QLabel(f"<b>{movie.title}</b><br>({movie.release_year})")
-          
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setWordWrap(True)  # במידה ויש כותרים ארוכים יותר
 
-        layout.addWidget(image_button, alignment=Qt.AlignCenter)
-
-        
-        layout.addWidget(image_button, alignment=Qt.AlignCenter)
-        layout.addWidget(title_label, alignment=Qt.AlignCenter)
+        layout.addWidget(image_button, alignment=Qt.AlignTop)
+        layout.addWidget(title_label, alignment=Qt.AlignTop)
         
         return frame
 
