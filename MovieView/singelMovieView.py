@@ -12,50 +12,47 @@ class SingleMovieView(QWidget):
     def init_ui(self):
         main_layout = QHBoxLayout(self)
 
-        primary_display = QVBoxLayout()
-        image_and_title_layout = self.create_image_and_title_layout()
-        primary_display.addLayout(image_and_title_layout)
-
+        # Left side: movie details
         details_layout = self.create_details_layout()
-        primary_display.addLayout(details_layout)
+        main_layout.addLayout(details_layout, stretch=1)
 
+        # Right side: description, responses, and actions
+        right_side_layout = QVBoxLayout()
+
+        # Description and responses
         description_and_responses_layout = self.create_description_and_responses_layout()
-        primary_display.addLayout(description_and_responses_layout)
+        right_side_layout.addLayout(description_and_responses_layout, stretch=3)
 
+        # Action buttons
         actions_layout = self.create_actions_layout()
-        main_layout.addLayout(primary_display)
-        main_layout.addLayout(actions_layout)
+        right_side_layout.addLayout(actions_layout)
+
+        main_layout.addLayout(right_side_layout, stretch=2)
 
         self.setLayout(main_layout)
         self.setWindowTitle("Movie Details")
 
-        # Initialize the UI with movie details if available
         if self.movie:
             self.update_ui()
 
-    def create_image_and_title_layout(self):
-        image_and_title_layout = QVBoxLayout()
+    def create_details_layout(self):
+        details_layout = QVBoxLayout()
 
         self.movie_image = QLabel(self)
         if self.movie and self.movie.image:
             self.movie_image.setPixmap(QPixmap(self.movie.image).scaled(200, 300, Qt.KeepAspectRatio))
-        self.movie_image.setObjectName("movie_image")
-        image_and_title_layout.addWidget(self.movie_image, alignment=Qt.AlignLeft)
+        details_layout.addWidget(self.movie_image, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         self.title_label = QLabel()
         self.title_label.setObjectName("title_label")
         self.title_label.setStyleSheet("font-size: 20px; font-weight: bold;")
-        image_and_title_layout.addWidget(self.title_label, alignment=Qt.AlignLeft)
+        details_layout.addWidget(self.title_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         self.year_label = QLabel()
         self.year_label.setObjectName("year_label")
         self.year_label.setStyleSheet("font-size: 14px; color: gray;")
-        image_and_title_layout.addWidget(self.year_label, alignment=Qt.AlignLeft)
+        details_layout.addWidget(self.year_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 
-        return image_and_title_layout
-
-    def create_details_layout(self):
-        details_layout = QVBoxLayout()
         self.details_labels = {
             "movie_id": QLabel(),
             "director": QLabel(),
@@ -64,46 +61,64 @@ class SingleMovieView(QWidget):
             "runtime": QLabel(),
         }
         for label in self.details_labels.values():
-            details_layout.addWidget(label)
+            details_layout.addWidget(label, alignment=Qt.AlignTop | Qt.AlignLeft)
+        
+        details_layout.addStretch()
         return details_layout
 
     def create_description_and_responses_layout(self):
-        description_and_responses_layout = QVBoxLayout()
+        layout = QVBoxLayout()
 
+        # Description
         description_label = QLabel("Description:")
         self.description_text = QTextEdit()
         self.description_text.setReadOnly(True)
-        description_and_responses_layout.addWidget(description_label)
-        description_and_responses_layout.addWidget(self.description_text)
+        layout.addWidget(description_label)
+        layout.addWidget(self.description_text)
 
+        # Responses
         responses_label = QLabel("Responses:")
         self.responses_list = QListWidget()
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(self.responses_list)
-        description_and_responses_layout.addWidget(responses_label)
-        description_and_responses_layout.addWidget(scroll_area)
+        scroll_area.setFixedSize(300,200)
+        layout.addWidget(responses_label)
+        layout.addWidget(scroll_area)
 
+        # Add response area
         add_response_layout = QHBoxLayout()
         self.new_response_input = QLineEdit()
+        self.new_response_input.setFixedSize(300,30)
         self.new_response_input.setPlaceholderText("Enter your response...")
-        add_response_button = QPushButton("ADD RESPONSE")
+        add_response_button = QPushButton("Add response")
+        add_response_button.setFixedSize(100, 30)
         add_response_button.clicked.connect(self.add_response)
         add_response_layout.addWidget(self.new_response_input)
         add_response_layout.addWidget(add_response_button)
-        description_and_responses_layout.addLayout(add_response_layout)
+        layout.addLayout(add_response_layout)
 
-        return description_and_responses_layout
+        return layout
 
     def create_actions_layout(self):
         actions_layout = QVBoxLayout()
-        delete_button = QPushButton("Delete Movie")
+        
+        # Update and delete buttons
         update_button = QPushButton("Update Movie Info")
-        back_button = QPushButton("Back to Movie List")
-        actions_layout.addWidget(delete_button)
+        update_button.setFixedSize(120, 30)
+
+        delete_button = QPushButton("Delete Movie")
+        delete_button.setFixedSize(100, 30)
         actions_layout.addWidget(update_button)
-        actions_layout.addWidget(back_button)
+        actions_layout.addWidget(delete_button)
+
+        # Back button centered at the bottom
+        back_button = QPushButton("Back to Movie List")
+        back_button.setFixedSize(150, 30)
         back_button.clicked.connect(self.back_to_movie_list)
+        actions_layout.addStretch()
+        actions_layout.addWidget(back_button, alignment=Qt.AlignRight)
+        
         return actions_layout
 
     def set_movie(self, movie):

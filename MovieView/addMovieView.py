@@ -9,31 +9,19 @@ class AddMovieForm(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-        self.minimum_field_width = 200
         self.setup_ui()
 
     def setup_ui(self):
         self.layout = QVBoxLayout(self)
-
-        main_layout = QVBoxLayout(self)
-        
-        self.setup_inputs(main_layout)
-
-        main_layout.addStretch()  
-
-        main_layout.setAlignment(Qt.AlignCenter)
-
-        self.layout.addLayout(main_layout)
-
+        self.setup_inputs(self.layout)
+        self.layout.addStretch()
         self.setup_buttons()
-
-        self.layout.setContentsMargins(10, 10, 10, 10)
-
+        self.layout.setAlignment(Qt.AlignCenter)
 
     def setup_inputs(self, main_layout):
         # Group Basic Info
         basic_info_group = QGroupBox("Basic Info")
-        basic_info_group.setFixedWidth(500)  # הגבלת רוחב
+        basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
         
         self.movie_id_input = QLineEdit(self)
@@ -54,7 +42,6 @@ class AddMovieForm(QWidget):
         
         self.movie_image_input = QPushButton("Upload Image", self)
         self.movie_image_input.clicked.connect(self.upload_image)
-        self.image_path_label = QLabel(self)
 
         basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_input)
         basic_layout.addRow(QLabel('Title:'), self.movie_title_input)
@@ -62,13 +49,13 @@ class AddMovieForm(QWidget):
         basic_layout.addRow(QLabel('Release Year:'), self.movie_release_year_input)
         basic_layout.addRow(QLabel('Runtime:'), self.movie_runtime_input)
         basic_layout.addRow(QLabel('Image:'), self.movie_image_input)
-        basic_layout.addRow(QLabel('Image Path:'), self.image_path_label)
 
         basic_info_group.setLayout(basic_layout)
 
         # Group Genres
         genre_group = QGroupBox("Genres")
-        genre_group.setFixedWidth(500)  # הגבלת רוחב
+        genre_group.setFixedWidth(500)
+        genre_group.setFixedHeight(170)
         genre_layout = QVBoxLayout()
         
         self.genre_list = QListWidget(self)
@@ -86,7 +73,7 @@ class AddMovieForm(QWidget):
 
         # Group Additional Info
         additional_info_group = QGroupBox("Additional Info")
-        additional_info_group.setFixedWidth(500)  # הגבלת רוחב
+        additional_info_group.setFixedWidth(500)
         additional_layout = QFormLayout()
         
         self.movie_rating_input = QSlider(Qt.Orientation.Horizontal, self)
@@ -98,10 +85,11 @@ class AddMovieForm(QWidget):
         
         self.movie_description_input = QTextEdit(self)
         self.movie_description_input.setPlaceholderText('Enter movie description')
-        self.movie_description_input.setFixedHeight(100)
+        self.movie_description_input.setFixedHeight(50)
 
         self.movie_response_input = QTextEdit(self)
         self.movie_response_input.setPlaceholderText('Enter movie response')
+        self.movie_response_input.setFixedHeight(50)
 
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
         additional_layout.addRow(QLabel('Description:'), self.movie_description_input)
@@ -109,10 +97,9 @@ class AddMovieForm(QWidget):
         
         additional_info_group.setLayout(additional_layout)
 
-        # הוספת כל קבוצה ללייאאוט המרכזי
-        main_layout.addWidget(basic_info_group)
-        main_layout.addWidget(genre_group)
-        main_layout.addWidget(additional_info_group)
+        self.layout.addWidget(basic_info_group)
+        self.layout.addWidget(genre_group)
+        self.layout.addWidget(additional_info_group)
 
     def upload_image(self):
         file_dialog = QFileDialog(self)
@@ -124,7 +111,6 @@ class AddMovieForm(QWidget):
             self.image_path_label.setText(file_path)
 
     def setup_buttons(self):
-        # לייאאוט כפתורים בתחתית
         button_layout = QHBoxLayout()
         self.add_button = QPushButton("Add Movie", self)
         self.add_button.clicked.connect(self.add_movie)
@@ -136,7 +122,6 @@ class AddMovieForm(QWidget):
         button_layout.addWidget(back_button)
         button_layout.setAlignment(Qt.AlignCenter)
 
-        # הוספת הכפתורים בתחתית
         self.layout.addLayout(button_layout)
 
     def add_movie(self):

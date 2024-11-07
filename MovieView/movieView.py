@@ -102,6 +102,7 @@ class MovieView(QMainWindow):
 
         self.stacked_widget.addWidget(self.movie_list_widget)
         self.stacked_widget.addWidget(self.add_movie_form_widget)
+        self.stacked_widget.addWidget(self.singel_movie_view)
 
         self.main_layout.addWidget(self.stacked_widget)
 
@@ -122,7 +123,6 @@ class MovieView(QMainWindow):
 
     def show_movie(self, movie):
         self.singel_movie_view.set_movie(movie)
-        self.stacked_widget.addWidget(self.singel_movie_view)
         self.stacked_widget.setCurrentWidget(self.singel_movie_view)
 
 
@@ -183,11 +183,10 @@ class MovieView(QMainWindow):
 
     def create_movie_frame(self, movie):
         frame = QFrame()
-        frame.setFixedSize(220, 360)  # התאמה קלה לגובה כדי לאפשר מקום לטקסט
+        frame.setFixedSize(220, 360)  
         layout = QVBoxLayout(frame)
         
         image_button = QPushButton()
-        #image_button.setStyleSheet("border: 5px solid;")
         image_button.setIcon(QPixmap(movie.image))
         image_button.setIconSize(QSize(200, 315))
         image_button.setFixedSize(QSize(200, 315))
