@@ -78,7 +78,7 @@ class AddMovieForm(QWidget):
         
         self.movie_rating_input = QSlider(Qt.Orientation.Horizontal, self)
         self.movie_rating_input.setMinimum(1)
-        self.movie_rating_input.setMaximum(5)
+        self.movie_rating_input.setMaximum(10)
         self.movie_rating_input.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.movie_rating_input.setTickInterval(1)
         self.movie_rating_input.setSingleStep(1)
