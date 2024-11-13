@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIntValidator
@@ -34,10 +34,11 @@ class AddMovieForm(QWidget):
         self.movie_director_input = QLineEdit(self)
         self.movie_director_input.setPlaceholderText('Enter movie director')
         
-        self.movie_release_year_input = QLineEdit(self)
-        self.movie_release_year_input.setPlaceholderText('Enter movie release year')
+        self.movie_release_year_input = QComboBox(self)
+        self.movie_release_year_input.addItems([str(year) for year in range(1900, 2026)])
         
         self.movie_runtime_input = QLineEdit(self)
+        self.movie_runtime_input.setValidator(QIntValidator(1, 999, self))
         self.movie_runtime_input.setPlaceholderText('Enter movie runtime')
         
         self.movie_image_input = QPushButton("Upload Image", self)
@@ -77,11 +78,14 @@ class AddMovieForm(QWidget):
         additional_layout = QFormLayout()
         
         self.movie_rating_input = QSlider(Qt.Orientation.Horizontal, self)
-        self.movie_rating_input.setMinimum(1)
-        self.movie_rating_input.setMaximum(10)
+        self.movie_rating_input.setMinimum(10)
+        self.movie_rating_input.setMaximum(100)
         self.movie_rating_input.setTickPosition(QSlider.TickPosition.TicksBelow)
-        self.movie_rating_input.setTickInterval(1)
+        self.movie_rating_input.setTickInterval(10)
         self.movie_rating_input.setSingleStep(1)
+        self.movie_rating_input.valueChanged.connect(self.update_rating_label)
+        
+        self.rating_label = QLabel("1.0", self)
         
         self.movie_description_input = QTextEdit(self)
         self.movie_description_input.setPlaceholderText('Enter movie description')
@@ -92,6 +96,7 @@ class AddMovieForm(QWidget):
         self.movie_response_input.setFixedHeight(50)
 
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
+        additional_layout.addRow(self.rating_label)
         additional_layout.addRow(QLabel('Description:'), self.movie_description_input)
         additional_layout.addRow(QLabel('Response:'), self.movie_response_input)
         
@@ -129,10 +134,13 @@ class AddMovieForm(QWidget):
                            if self.genre_list.item(i).checkState() == Qt.CheckState.Checked]
         
         print("Selected genres:", selected_genres)
-        print("Selected rating:", self.movie_rating_input.value())
+        print("Selected rating:", self.movie_rating_input.value() / 10)
         print("Movie description:", self.movie_description_input.toPlainText())
         print("Movie response:", self.movie_response_input.toPlainText())
 
     def go_back(self):
         if self.parent:
             self.parent.show_movie_list()
+
+    def update_rating_label(self, value):
+        self.rating_label.setText(f"{value / 10:.1f}")
