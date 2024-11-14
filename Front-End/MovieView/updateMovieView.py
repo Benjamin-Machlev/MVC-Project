@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIntValidator
@@ -60,19 +60,15 @@ class UpdateMovieForm(QWidget):
         genre_group = QGroupBox("Genres")
         genre_group.setFixedWidth(500)
         genre_group.setFixedHeight(170)
-        genre_layout = QVBoxLayout()
+        genre_layout = QGridLayout()
         
-        self.genre_list = QListWidget(self)
-        self.genre_list.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        
+        self.genre_checkboxes = []
         genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller']
-        for genre in genres:
-            item = QListWidgetItem(genre)
-            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            item.setCheckState(Qt.CheckState.Unchecked)
-            self.genre_list.addItem(item)
+        for i, genre in enumerate(genres):
+            checkbox = QCheckBox(genre, self)
+            self.genre_checkboxes.append(checkbox)
+            genre_layout.addWidget(checkbox, i // 3, i % 3)  # Arrange in a grid with 3 columns
         
-        genre_layout.addWidget(self.genre_list)
         genre_group.setLayout(genre_layout)
 
         # Group Additional Info
@@ -119,10 +115,9 @@ class UpdateMovieForm(QWidget):
         self.movie_response_input.setText("\n".join(self.movie.responses))
         self.movie_rating_input.setValue(int(self.movie.rating * 10))
         # Set genres
-        for i in range(self.genre_list.count()):
-            item = self.genre_list.item(i)
-            if item.text() in self.movie.genre.split(", "):
-                item.setCheckState(Qt.CheckState.Checked)
+        for checkbox in self.genre_checkboxes:
+            if checkbox.text() in self.movie.genre.split(", "):
+                checkbox.setChecked(True)
 
     def upload_image(self):
         file_dialog = QFileDialog(self)
@@ -148,8 +143,7 @@ class UpdateMovieForm(QWidget):
         self.layout.addLayout(button_layout)
 
     def update_movie(self):
-        selected_genres = [self.genre_list.item(i).text() for i in range(self.genre_list.count())
-                           if self.genre_list.item(i).checkState() == Qt.CheckState.Checked]
+        selected_genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
         
         print("Selected genres:", selected_genres)
         print("Selected rating:", self.movie_rating_input.value() / 10)

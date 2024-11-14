@@ -105,7 +105,7 @@ class SingleMovieView(QWidget):
         self.new_response_input.setFixedSize(300, 30)
         self.new_response_input.setPlaceholderText("Enter your response...")
         add_response_button = QPushButton("Add response")
-        add_response_button.setFixedSize(100, 30)
+        add_response_button.setFixedSize(200, 30)
         add_response_button.clicked.connect(self.add_response)
         add_response_layout.addWidget(self.new_response_input, alignment=Qt.AlignLeft)
         add_response_layout.addWidget(add_response_button, alignment=Qt.AlignLeft)
@@ -122,17 +122,17 @@ class SingleMovieView(QWidget):
         
         # Update and delete buttons
         update_button = QPushButton("Update Movie Info")
-        update_button.setFixedSize(120, 30)
+        update_button.setFixedSize(200, 30)
         update_button.clicked.connect(self.show_update_movie_form)
 
         delete_button = QPushButton("Delete Movie")
-        delete_button.setFixedSize(100, 30)
+        delete_button.setFixedSize(200, 30)
         actions_layout.addWidget(update_button)
         actions_layout.addWidget(delete_button)
 
         # Back button aligned to the left below the other buttons
         back_button = QPushButton("Back to Movie List")
-        back_button.setFixedSize(150, 30)
+        back_button.setFixedSize(200, 30)
         back_button.clicked.connect(self.back_to_movie_list)
         actions_layout.addWidget(back_button, alignment=Qt.AlignLeft)
         

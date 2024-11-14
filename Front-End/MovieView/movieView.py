@@ -147,10 +147,14 @@ class MovieView(QMainWindow):
 
         search_input = QLineEdit()
         search_input.setPlaceholderText("Search movies...")
+        search_input.setFixedSize(300, 30)
+        search_input.setStyleSheet("color: white;")
         self.top_bar_layout.addWidget(search_input)
 
         search_button = QPushButton("Search")
         search_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        search_button.setFixedSize(300,30)
+        #search_button.setProperty("class", "success")
         self.top_bar_layout.addWidget(search_button)
 
         self.top_bar_layout.addStretch(1)
@@ -190,26 +194,27 @@ class MovieView(QMainWindow):
         
 
     def create_movie_frame(self, movie):
-        frame = QFrame()
-        frame.setFixedSize(220, 360)  
-        layout = QVBoxLayout(frame)
-        
+
         image_button = QPushButton()
         image_button.setIcon(QPixmap(movie.image))
         image_button.setIconSize(QSize(200, 315))
         image_button.setFixedSize(QSize(200, 315))
         image_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        
         image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))
 
         title_label = QLabel(f"<b>{movie.title}</b><br>({movie.release_year})")
         title_label.setAlignment(Qt.AlignCenter)
-        title_label.setWordWrap(True)  # במידה ויש כותרים ארוכים יותר
+        title_label.setWordWrap(True)
 
-        layout.addWidget(image_button, alignment=Qt.AlignTop)
-        layout.addWidget(title_label, alignment=Qt.AlignTop)
+        movie_frame = QVBoxLayout()
+        movie_frame.addWidget(image_button)
+        movie_frame.addWidget(title_label)
         
-        return frame
-
+        frame_widget = QWidget()
+        frame_widget.setLayout(movie_frame)
+        
+        return frame_widget
 
     def create_footer(self):
         footer_widget = QWidget()
