@@ -1,33 +1,79 @@
 using Microsoft.AspNetCore.Mvc;
+using MoviesServer.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoviesServer.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class MoviesController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly MoviesContext _context;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public MoviesController(MoviesContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        // GET: api/movies
+        [HttpGet]
+        public ActionResult<List<Movie>> GetAllMovies()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var movies = _context.Movies.ToList();
+            return movies;
+        }
+
+        // GET: api/movies/5
+        [HttpGet("{id}")]
+        public ActionResult<Movie> GetMovie(int id)
+        {
+            var movie = _context.Movies.Find(id);
+            if (movie == null)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return NotFound();
+            }
+            return movie;
+        }
+
+        // POST: api/movies
+        [HttpPost]
+        public ActionResult<Movie> AddMovie(Movie movie)
+        {
+            _context.Movies.Add(movie);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetMovie), new { id = movie.MovieID }, movie);
+        }
+
+        // PUT: api/movies/5
+        [HttpPut("{id}")]
+        public IActionResult UpdateMovie(int id, Movie movie)
+        {
+            if (id != movie.MovieID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(movie).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        // DELETE: api/movies/5
+        [HttpDelete("{id}")]
+        public IActionResult DeleteMovie(int id)
+        {
+            var movie = _context.Movies.Find(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            _context.Movies.Remove(movie);
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }

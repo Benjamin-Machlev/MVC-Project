@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTextEdit,
-    QScrollArea, QListWidget, QListWidgetItem, QSizePolicy, QGroupBox)
+    QScrollArea, QListWidget, QListWidgetItem, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import (QPropertyAnimation, QPoint, QEasingCurve, QParallelAnimationGroup, Qt,
                             QSequentialAnimationGroup, QPropertyAnimation, QAbstractAnimation, QAnimationGroup,
@@ -43,6 +43,7 @@ class SingleMovieView(QWidget):
 
         self.setLayout(main_layout)
         self.setWindowTitle("Movie Details")
+        self.setGeometry(QApplication.primaryScreen().availableGeometry())
 
         if self.movie:
             self.update_ui()
