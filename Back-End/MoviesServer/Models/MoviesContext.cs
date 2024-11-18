@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using System.Collections.Generic;
-using System.Reflection.Emit;
-
 namespace MoviesServer.Models
 {
     public class MoviesContext : DbContext
@@ -18,15 +15,9 @@ namespace MoviesServer.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("your-connection-string-here");
+                optionsBuilder.UseSqlServer("workstation id=MoviesDB.mssql.somee.com;packet size=4096;user id=BennyM_SQLLogin_1;pwd=zistjlahtw;data source=MoviesDB.mssql.somee.com;persist security info=False;initial catalog=MoviesDB;TrustServerCertificate=True");
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Movie>().ToTable("Movies");
-            modelBuilder.Entity<Movie>().HasKey(m => m.MovieID);
-            modelBuilder.Entity<Movie>().Property(m => m.Title).IsRequired();
-        }
     }
 }
