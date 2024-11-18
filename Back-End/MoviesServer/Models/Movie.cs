@@ -1,7 +1,7 @@
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 
-namespace MoviesServer
+namespace MoviesServer.Models
 {
     public class Movie
     {
@@ -13,10 +13,10 @@ namespace MoviesServer
         public double Rating { get; set; }
         public int Runtime { get; set; }
         public string Description { get; set; }
-        public string Responses { get; set; }
+        public List<string> Responses { get; set; }
         public string Image { get; set; }
 
-        public Movie(int movieID, string title, string director, int releaseYear, string genre, double rating, int runtime, string description, string responses, string image)
+        public Movie(int movieID, string title, string director, int releaseYear, string genre, double rating, int runtime, string description, List<string> responses, string image)
         {
             MovieID = movieID;
             Title = title;
