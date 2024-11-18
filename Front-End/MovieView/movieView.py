@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QGridLayout,
     QScrollArea
 )
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, QSize
 from MovieView.singelMovieView import SingleMovieView
 from MovieView.addMovieView import AddMovieForm 
@@ -78,6 +78,15 @@ class MovieView(QMainWindow):
         self.setWindowTitle('YTS.mx Like UI')
         self.setGeometry(400, 100, 800, 600)
 
+        # Set the window icon
+        icon_path = r"Front-End\movies img\theaters.svg"
+        self.setWindowIcon(QIcon(icon_path))
+
+        # Set the taskbar icon
+        if sys.platform == 'win32':
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u'YTS.mx')
+
         self.central_widget = QWidget()
         self.main_layout = QVBoxLayout(self.central_widget)
 
@@ -139,6 +148,11 @@ class MovieView(QMainWindow):
         self.top_bar_layout = QHBoxLayout(self.top_bar_widget)
         self.top_bar_layout.setContentsMargins(20, 20, 20, 20)
         self.top_bar_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
+        # Add the icon to the top bar
+        icon_label = QLabel()
+        icon_label.setPixmap(QPixmap(r"Front-End\movies img\theaters.svg").scaled(24, 24, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        self.top_bar_layout.addWidget(icon_label)
 
         site_title = QLabel("YTS.mx")
         self.top_bar_layout.addWidget(site_title)

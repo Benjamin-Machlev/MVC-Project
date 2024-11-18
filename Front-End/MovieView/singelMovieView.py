@@ -1,6 +1,11 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTextEdit, QScrollArea, QListWidget, QListWidgetItem, QSizePolicy, QGroupBox
-from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTextEdit,
+    QScrollArea, QListWidget, QListWidgetItem, QSizePolicy, QGroupBox)
+from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtCore import (QPropertyAnimation, QPoint, QEasingCurve, QParallelAnimationGroup, Qt,
+                            QSequentialAnimationGroup, QPropertyAnimation, QAbstractAnimation, QAnimationGroup,
+                            QPauseAnimation)
+
 from MovieView.updateMovieView import UpdateMovieForm
 
 class SingleMovieView(QWidget):
@@ -118,23 +123,51 @@ class SingleMovieView(QWidget):
 
     def create_actions_layout(self):
         actions_group = QGroupBox("Actions")
-        actions_layout = QVBoxLayout()
+        actions_layout = QHBoxLayout()  # Change to QHBoxLayout to arrange buttons side by side
+        actions_layout.setAlignment(Qt.AlignCenter)  # Center the buttons
+        
+        button_style = """
+            QPushButton {
+                border: 1px solid #d0d0d0;
+                border-radius: 10px;
+                padding: 5px;
+                margin: 5px;
+                
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                
+            }
+        """
         
         # Update and delete buttons
         update_button = QPushButton("Update Movie Info")
-        update_button.setFixedSize(200, 30)
+        update_button.setFixedSize(200, 80)  # Set button size
+        update_button.setIcon(QIcon(r"Front-End\movies img/update.svg"))
+        update_button.setLayoutDirection(Qt.RightToLeft)
+        update_button.setStyleSheet(button_style)
+        update_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         update_button.clicked.connect(self.show_update_movie_form)
 
         delete_button = QPushButton("Delete Movie")
-        delete_button.setFixedSize(200, 30)
+        delete_button.setFixedSize(200, 80)  # Set button size
+        delete_button.setIcon(QIcon(r"Front-End\movies img/delete.svg"))
+        delete_button.setLayoutDirection(Qt.RightToLeft)
+        delete_button.setStyleSheet(button_style)
+        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        
+        # Back button
+        back_button = QPushButton("Back to Movie List")
+        back_button.setFixedSize(200, 80)  # Set button size
+        back_button.setIcon(QIcon(r"Front-End\movies img/menu.svg"))
+        back_button.setLayoutDirection(Qt.RightToLeft)
+        back_button.setStyleSheet(button_style)
+        back_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        back_button.clicked.connect(self.back_to_movie_list)
+        
         actions_layout.addWidget(update_button)
         actions_layout.addWidget(delete_button)
-
-        # Back button aligned to the left below the other buttons
-        back_button = QPushButton("Back to Movie List")
-        back_button.setFixedSize(200, 30)
-        back_button.clicked.connect(self.back_to_movie_list)
-        actions_layout.addWidget(back_button, alignment=Qt.AlignLeft)
+        actions_layout.addWidget(back_button)
         
         actions_group.setLayout(actions_layout)
         return actions_group
