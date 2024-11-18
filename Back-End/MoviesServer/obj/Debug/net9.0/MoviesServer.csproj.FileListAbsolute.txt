@@ -78,3 +78,6 @@ C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\MoviesServer.pdb
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\MoviesServer.genruntimeconfig.cache
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\ref\MoviesServer.dll
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
