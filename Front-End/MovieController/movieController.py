@@ -25,19 +25,23 @@ class MovieController:
             movie_data["movie_id"], movie_data["title"], movie_data["director"],
             movie_data["release_year"], ", ".join(movie_data["genres"]),
             movie_data["rating"], movie_data["runtime"], movie_data["description"],
-            [movie_data["response"]], movie_data["image"]
+            [movie_data["response"]]
         )
         self.movieModel.add_movie(movie)
         self.show_movie_list()
 
     def update_movie(self, movie_data):
+        print(f"Controller: Updating movie with data: {movie_data}")  # Debug print
         movie = Movie(
             movie_data["movie_id"], movie_data["title"], movie_data["director"],
             movie_data["release_year"], ", ".join(movie_data["genres"]),
             movie_data["rating"], movie_data["runtime"], movie_data["description"],
             [movie_data["response"]], movie_data["image"]
         )
+        print(f"Controller: Created movie object: {movie.__dict__}")  # Debug print
         self.movieModel.update_movie(movie_data["movie_id"], movie)
+        print("Controller: Movie update request sent to model")  # Debug print
+        self.refresh_movie_list()  # Refresh the movie list after updating
         self.show_movie_list()
 
     def add_response(self, movie, response_text):
