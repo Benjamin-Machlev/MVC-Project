@@ -47,3 +47,8 @@ class MovieController:
     def delete_movie(self, movie_id):
         self.movieModel.delete_movie(movie_id)
         self.show_movie_list()
+
+    def refresh_movie_list(self):
+        self.movieModel.initialize_movies()
+        if self.movieView:
+            self.show_movie_list()

@@ -87,6 +87,8 @@ class MovieView(QMainWindow):
 
         self.main_layout.setStretch(2, 0)
 
+        self.controller.refresh_movie_list()
+
 
     def show_movie_list(self):
         self.create_movie_list(self.controller.movieModel.movies)
