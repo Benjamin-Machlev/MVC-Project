@@ -4,11 +4,16 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import (QPropertyAnimation, QPoint, QEasingCurve, QParallelAnimationGroup, Qt,
                             QSequentialAnimationGroup, QPropertyAnimation, QAbstractAnimation, QAnimationGroup,
-                            QPauseAnimation)
+                            QPauseAnimation, Signal)
 
 from MovieView.updateMovieView import UpdateMovieForm
 
 class SingleMovieView(QWidget):
+    show_update_movie_form_signal = Signal(object)
+    delete_movie_signal = Signal(int)
+    add_response_signal = Signal(object, str)
+    back_to_movie_list_signal = Signal()
+
     def __init__(self, parent=None, movie=None):
         super().__init__(parent)
         self.movie = movie
@@ -155,6 +160,7 @@ class SingleMovieView(QWidget):
         delete_button.setLayoutDirection(Qt.RightToLeft)
         delete_button.setStyleSheet(button_style)
         delete_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        delete_button.clicked.connect(self.delete_movie)
         
         # Back button
         back_button = QPushButton("Back to Movie List")
@@ -173,8 +179,11 @@ class SingleMovieView(QWidget):
         return actions_group
 
     def show_update_movie_form(self):
-        if self.parent:
-            self.parent.show_update_movie_form(self.movie)
+        self.show_update_movie_form_signal.emit(self.movie)
+
+    def delete_movie(self):
+        self.delete_movie_signal.emit(self.movie.movieID)
+        self.back_to_movie_list_signal.emit()  # Return to movie list after deleting
 
     def set_movie(self, movie):
         self.movie = movie
@@ -210,13 +219,8 @@ class SingleMovieView(QWidget):
                 self.responses_list.addWidget(response_label)
 
     def add_response(self):
-        if self.movie:
-            response_text = self.new_response_input.text()
-            if response_text:
-                self.movie.responses.append(response_text)
-                self.new_response_input.clear()
-                self.update_responses_list()
+        self.add_response_signal.emit(self.movie, self.new_response_input.text())
+        self.new_response_input.clear()
 
     def back_to_movie_list(self):
-        if self.parent:
-            self.parent.show_movie_list()
+        self.back_to_movie_list_signal.emit()

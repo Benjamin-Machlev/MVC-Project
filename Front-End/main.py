@@ -7,14 +7,13 @@ from qt_material import apply_stylesheet
 
 def main():
     app = QApplication([])
-    with open(r"Front-End\MovieView\style.qss", "r",encoding="utf-8") as style_file:
-        app.setStyleSheet(style_file.read()) 
+    with open(r"Front-End\MovieView\style.qss", "r", encoding="utf-8") as style_file:
+        app.setStyleSheet(style_file.read())
 
-    apply_stylesheet(app, theme='dark_teal.xml')
-    
     model = MovieModel()
-    view = MovieView(model)
-    controller = MovieController(model, view)
+    controller = MovieController(model, None)  # Initialize controller first
+    view = MovieView(controller, model.movies)  # Pass controller to MovieView
+    controller.movieView = view  # Set the view for the controller
     controller.run()
     app.exec()
 
