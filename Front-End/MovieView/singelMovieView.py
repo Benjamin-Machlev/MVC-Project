@@ -107,7 +107,7 @@ class SingleMovieView(QWidget):
         responses_widget = QWidget()
         responses_widget.setLayout(self.responses_list)
         scroll_area.setWidget(responses_widget)
-        scroll_area.setFixedSize(300, 150)  # Reduce the height
+        scroll_area.setFixedSize(800, 300)  # Reduce the height
         responses_layout.addWidget(scroll_area)
 
         # Add response area
@@ -211,7 +211,8 @@ class SingleMovieView(QWidget):
                 response_label = QLabel(response)
                 response_label.setWordWrap(True)
                 response_label.setStyleSheet("""
-                    background-color: #f0f0f0;
+                    color:  #237, 231, 178;
+                    background-color: #000000;
                     border: 1px solid #d0d0d0;
                     border-radius: 10px;
                     padding: 5px;
