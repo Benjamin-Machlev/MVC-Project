@@ -46,11 +46,12 @@ class MovieView(QMainWindow):
         self.top_bar_widget = None
         self.add_movie_form_widget = None
         self.stacked_widget = QStackedWidget(self.central_widget)
+        self.movie_list_widget = None
+        self.add_movie_form_widget = None
+        self.singel_movie_view = None
+        self.update_movie_form_widget = None
 
-        self.init_ui()
         self.setCentralWidget(self.central_widget)
-        self.showMaximized()
-
 
     def init_ui(self):
         self.create_top_bar()
@@ -89,22 +90,29 @@ class MovieView(QMainWindow):
 
         self.controller.refresh_movie_list()
 
+        self.update_add_button_state()
+
+        self.showMaximized()  # Move this line here to maximize after UI initialization
+
 
     def show_movie_list(self):
-        self.create_movie_list(self.controller.movieModel.movies)
         self.stacked_widget.setCurrentWidget(self.movie_list_widget)
+        self.update_add_button_state()
 
     def show_add_movie_form(self):
         self.stacked_widget.setCurrentWidget(self.add_movie_form_widget) 
+        self.update_add_button_state()
 
     def show_movie(self, movie):
         self.singel_movie_view.set_movie(movie)
         self.stacked_widget.setCurrentWidget(self.singel_movie_view)
+        self.update_add_button_state()
 
     def show_update_movie_form(self, movie):
         self.update_movie_form_widget.movie = movie
         self.update_movie_form_widget.populate_fields()
         self.stacked_widget.setCurrentWidget(self.update_movie_form_widget)
+        self.update_add_button_state()
 
     def delete_movie(self, movie_id):
         self.controller.delete_movie(movie_id)
@@ -126,27 +134,29 @@ class MovieView(QMainWindow):
 
         self.top_bar_layout.addStretch(1)
 
-        search_input = QLineEdit()
-        search_input.setPlaceholderText("Search movies...")
-        search_input.setFixedSize(300, 30)
-        search_input.setStyleSheet("color: white;")
-        self.top_bar_layout.addWidget(search_input)
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Search movies...")
+        self.search_input.setFixedSize(300, 30)
+        self.search_input.setStyleSheet("color: white;")
+        self.top_bar_layout.addWidget(self.search_input)
 
-        search_button = QPushButton("Search")
-        search_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        search_button.setFixedSize(300,30)
-        #search_button.setProperty("class", "success")
-        self.top_bar_layout.addWidget(search_button)
+        self.search_button = QPushButton("Search")
+        self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.search_button.setFixedSize(300, 30)
+        self.top_bar_layout.addWidget(self.search_button)
 
         self.top_bar_layout.addStretch(1)
-        add_button = QPushButton("Add")
-        add_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.top_bar_layout.addWidget(add_button)
-        add_button.clicked.connect(self.show_add_movie_form)
+        self.add_button = QPushButton("Add")
+        self.add_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.top_bar_layout.addWidget(self.add_button)
+        self.add_button.clicked.connect(self.show_add_movie_form)
 
     def create_movie_list(self, movies):
         self.movie_list_widget = QWidget(self)
         outer_layout = QVBoxLayout(self.movie_list_widget)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
+        
+        scroll_area = QScrollArea()
         outer_layout.setContentsMargins(0, 0, 0, 0)
         
         scroll_area = QScrollArea()
@@ -172,7 +182,7 @@ class MovieView(QMainWindow):
         scroll_area.setWidget(content_widget)      
         outer_layout.addWidget(scroll_area)
 
-        
+        self.stacked_widget.addWidget(self.movie_list_widget)  # Add the movie list widget to the stacked widget
 
     def create_movie_frame(self, movie):
 
@@ -205,6 +215,23 @@ class MovieView(QMainWindow):
         footer_layout.addWidget(footer_label)
 
         self.main_layout.addWidget(footer_widget)
+
+    def update_add_button_state(self):
+        if self.stacked_widget.currentWidget() == self.movie_list_widget:
+            self.add_button.setEnabled(True)
+            self.search_button.setEnabled(True)
+            self.search_input.setEnabled(True)
+        else:
+            self.add_button.setEnabled(False)
+            self.search_button.setEnabled(False)
+            self.search_input.setEnabled(False)
+
+    def update_movie_list(self, movies):
+        self.movies = movies
+        self.create_movie_list(movies)
+        self.stacked_widget.setCurrentWidget(self.movie_list_widget)
+
+
 
 
 

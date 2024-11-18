@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator
+import requests
 
 class UpdateMovieForm(QWidget):
     update_movie_signal = Signal(dict)
@@ -150,19 +151,37 @@ class UpdateMovieForm(QWidget):
         self.layout.addLayout(button_layout)
 
     def update_movie(self):
+        genres = [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()]
+        response_text = self.movie_response_input.toPlainText()
+        
+        if not genres:
+            QMessageBox.critical(self, "Validation Error", "At least one genre must be selected.")
+            return
+        
+        if not response_text:
+            QMessageBox.critical(self, "Validation Error", "Response field cannot be empty.")
+            return
+        
         movie_data = {
             "movie_id": self.movie_id_input.text(),
             "title": self.movie_title_input.text(),
             "director": self.movie_director_input.text(),
             "release_year": self.movie_release_year_input.currentText(),
             "runtime": self.movie_runtime_input.text(),
-            "genres": [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()],
+            "genres": genres,
             "rating": self.movie_rating_input.value() / 10,
             "description": self.movie_description_input.toPlainText(),
-            "response": self.movie_response_input.toPlainText()
+            "response": response_text,
+            "image": self.image_path_label.text()
         }
-        self.update_movie_signal.emit(movie_data)
-        self.go_back_signal.emit()  # Return to movie list after updating
+        response = requests.put(f"http://localhost:5156/api/movies/{movie_data['movie_id']}", json=movie_data)
+        if response.status_code == 200:
+            self.update_movie_signal.emit(movie_data)
+            self.go_back_signal.emit()  # Return to movie list after updating
+        else:
+            error_message = f"Failed to update movie, status code: {response.status_code}\n{response.text}"
+            print(error_message)  # Log error to terminal
+            QMessageBox.critical(self, "Update Failed", error_message)
 
     def update_rating_label(self, value):
         self.rating_label.setText(f"{value / 10:.1f}")

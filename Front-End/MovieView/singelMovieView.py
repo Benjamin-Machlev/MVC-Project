@@ -183,6 +183,7 @@ class SingleMovieView(QWidget):
         self.show_update_movie_form_signal.emit(self.movie)
 
     def delete_movie(self):
+        print(f"Deleting movie with ID: {self.movie.movieID}")  # Debug print
         self.delete_movie_signal.emit(self.movie.movieID)
         self.back_to_movie_list_signal.emit()  # Return to movie list after deleting
 

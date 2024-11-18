@@ -25,7 +25,7 @@ class MovieController:
             movie_data["movie_id"], movie_data["title"], movie_data["director"],
             movie_data["release_year"], ", ".join(movie_data["genres"]),
             movie_data["rating"], movie_data["runtime"], movie_data["description"],
-            [movie_data["response"]]
+            [movie_data["response"]], movie_data["image"]
         )
         self.movieModel.add_movie(movie)
         self.show_movie_list()
@@ -35,7 +35,7 @@ class MovieController:
             movie_data["movie_id"], movie_data["title"], movie_data["director"],
             movie_data["release_year"], ", ".join(movie_data["genres"]),
             movie_data["rating"], movie_data["runtime"], movie_data["description"],
-            [movie_data["response"]]
+            [movie_data["response"]], movie_data["image"]
         )
         self.movieModel.update_movie(movie_data["movie_id"], movie)
         self.show_movie_list()
@@ -45,10 +45,11 @@ class MovieController:
         self.show_movie(movie)
 
     def delete_movie(self, movie_id):
+        print(f"Controller: Deleting movie with ID: {movie_id}")  # Debug print
         self.movieModel.delete_movie(movie_id)
-        self.show_movie_list()
+        self.refresh_movie_list()
 
     def refresh_movie_list(self):
         self.movieModel.initialize_movies()
         if self.movieView:
-            self.show_movie_list()
+            self.movieView.update_movie_list(self.movieModel.movies)  # Update the movie list in the view

@@ -11,9 +11,10 @@ def main():
         app.setStyleSheet(style_file.read())
 
     model = MovieModel()
-    controller = MovieController(model, None)  # Initialize controller first
-    view = MovieView(controller, model.movies)  # Pass controller to MovieView
-    controller.movieView = view  # Set the view for the controller
+    view = MovieView(None, model.movies)  # Initialize view first
+    controller = MovieController(model, view)  # Pass view to controller
+    view.controller = controller  # Set the controller for the view
+    view.init_ui()  # Initialize UI after setting the controller
     controller.run()
     app.exec()
 
