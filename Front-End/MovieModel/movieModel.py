@@ -1,5 +1,7 @@
 import requests
 from Entity.movie import Movie
+from colorama import Fore, Back, Style
+import os
 
 class MovieModel:
     def __init__(self):
@@ -25,13 +27,16 @@ class MovieModel:
         self.movies.append(movie)
 
     def update_movie(self, movie_id, updated_movie):
+        print(Fore.GREEN + f"Model.update_movie: Updating movie with ID: {movie_id}")  # Debug print
+
         for i, movie in enumerate(self.movies):
-            if movie.movieID == movie_id:
+            if movie.movieID == int(movie_id):
                 self.movies[i] = updated_movie
                 self.send_update_request(movie_id, updated_movie)
                 break
 
     def send_update_request(self, movie_id, updated_movie):
+        print(Fore.GREEN + f"Model.send_update_request: Sending update request for movie ID: {movie_id}")  # Debug print
         url = f"http://localhost:5156/api/movies/{movie_id}"
         movie_data = {
             "movieID": updated_movie.movieID,  # Ensure this matches the backend expectation
@@ -45,7 +50,13 @@ class MovieModel:
             "responses": updated_movie.responses,  # Ensure this matches the backend expectation
             "image": updated_movie.image
         }
-        print(f"Sending update request to {url} with data: {movie_data}")  # Debug print
+
+        if updated_movie.image:
+            self.save_image(updated_movie.image)
+            # Update the image path in the movie data after saving the image
+            movie_data["image"] = os.path.join("Front-End\\movies img\\", os.path.basename(updated_movie.image))
+
+        print(Fore.GREEN + f"Sending update request to {url} with data: {movie_data}")  # Debug print
         try:
             response = requests.put(url, json=movie_data)
             print(f"Received response: {response.status_code}")  # Debug print
@@ -63,6 +74,22 @@ class MovieModel:
                     print("Response is not in JSON format")
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")
+
+    def save_image(self, image_path):
+        image_directory = "Front-End\\movies img\\"
+        if not os.path.exists(image_directory):
+            os.makedirs(image_directory)
+        
+        image_name = os.path.basename(image_path)
+        destination_path = os.path.join(image_directory, image_name)
+        
+        if os.path.exists(destination_path):
+            print(f"Image {image_name} already exists in {image_directory}")
+        else:
+            with open(image_path, 'rb') as src_file:
+                with open(destination_path, 'wb') as dest_file:
+                    dest_file.write(src_file.read())
+            print(f"Image {image_name} saved to {image_directory}")
 
     def fetch_movie_from_server(self, movie_id):
         url = f"http://localhost:5156/api/movies/{movie_id}"

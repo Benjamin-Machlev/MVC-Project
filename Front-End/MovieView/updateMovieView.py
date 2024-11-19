@@ -34,6 +34,7 @@ class UpdateMovieForm(QWidget):
         self.movie_id_input = QLineEdit(self)
         self.movie_id_input.setValidator(QIntValidator(1, 9999999, self))
         self.movie_id_input.setPlaceholderText('Enter movie ID')
+        self.movie_id_input.setReadOnly(True)
         
         self.movie_title_input = QLineEdit(self)
         self.movie_title_input.setPlaceholderText('Enter movie title')
@@ -130,7 +131,7 @@ class UpdateMovieForm(QWidget):
     def upload_image(self):
         file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.ExistingFile)
-        file_dialog.setNameFilter("Images (*.png *.xpm *.jpg)")
+        file_dialog.setNameFilter("Images (*.png *.xpm *.jpg *.jpeg)")
         
         if file_dialog.exec_():
             file_path = file_dialog.selectedFiles()[0]
