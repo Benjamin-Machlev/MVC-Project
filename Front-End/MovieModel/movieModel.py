@@ -23,8 +23,34 @@ class MovieModel:
         else:
             self.movies = []
 
-    def add_movie(self, movie):
-        self.movies.append(movie)
+    def add_movie(self, movie_data):
+        print(Fore.GREEN + f"Model.add_movie: Sending add request with data: {movie_data}")  # Debug print
+        movie_data["releaseYear"] = int(movie_data["releaseYear"])  # Ensure this matches the backend expectation
+        movie_data["rating"] = float(movie_data["rating"])  # Ensure this matches the backend expectation
+        movie_data["runtime"] = int(movie_data["runtime"])  # Ensure this matches the backend expectation
+        movie_data["Genre"] = ", ".join(movie_data.pop("genres"))  # Update the key to match the backend expectation
+
+        response = requests.post("http://localhost:5156/api/movies", json=movie_data)
+        print(Fore.GREEN + f"Model.add_movie: Received response: {response.status_code}")  # Debug print
+        print(Fore.GREEN + f"Model.add_movie: Response content: {response.content}")  # Debug print
+        if response.status_code == 201:
+            movie = Movie(
+                movie_data["movieID"], movie_data["title"], movie_data["director"],
+                movie_data["releaseYear"], movie_data["Genre"],
+                movie_data["rating"], movie_data["runtime"], movie_data["description"],
+                movie_data["responses"], movie_data["image"]
+            )
+            self.movies.append(movie)
+            print("Movie added successfully")
+            # Verify the addition by fetching the movie directly from the server
+            added_movie_from_server = self.fetch_movie_from_server(movie_data["movieID"])
+            print(f"Added movie from server: {added_movie_from_server}")
+        else:
+            print(f"Failed to add movie: {response.status_code}")
+            try:
+                print(f"Response JSON: {response.json()}")  # Print the JSON response for more details
+            except ValueError:
+                print("Response is not in JSON format")
 
     def update_movie(self, movie_id, updated_movie):
         print(Fore.GREEN + f"Model.update_movie: Updating movie with ID: {movie_id}")  # Debug print
