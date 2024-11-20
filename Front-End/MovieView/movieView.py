@@ -62,8 +62,8 @@ class MovieView(QMainWindow):
         self.stacked_widget.setContentsMargins(0, 0, 0, 0)
         self.create_movie_list(movies=self.movies)
         self.add_movie_form_widget = AddMovieForm(self)
-        self.singel_movie_view = SingleMovieView(self)
         self.update_movie_form_widget = UpdateMovieForm(self)
+        self.singel_movie_view = SingleMovieView(self)
 
         self.stacked_widget.addWidget(self.movie_list_widget)
         self.stacked_widget.addWidget(self.add_movie_form_widget)
@@ -78,6 +78,7 @@ class MovieView(QMainWindow):
         self.singel_movie_view.back_to_movie_list_signal.connect(self.show_movie_list)
         self.update_movie_form_widget.update_movie_signal.connect(self.controller.update_movie)
         self.update_movie_form_widget.go_back_signal.connect(self.show_movie_list)
+        self.update_movie_form_widget.go_back_to_single_movie_signal.connect(self.show_current_movie)
 
         self.main_layout.addWidget(self.stacked_widget)
 
@@ -116,6 +117,9 @@ class MovieView(QMainWindow):
         self.update_movie_form_widget.populate_fields()
         self.stacked_widget.setCurrentWidget(self.update_movie_form_widget)
         self.update_add_button_state()
+
+    def show_current_movie(self):
+        self.show_movie(self.update_movie_form_widget.movie)
 
     def delete_movie(self, movie_id):
         self.controller.delete_movie(movie_id)
