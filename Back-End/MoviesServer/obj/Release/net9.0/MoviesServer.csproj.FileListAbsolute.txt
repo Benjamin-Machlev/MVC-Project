@@ -80,3 +80,10 @@ C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Release\net9.
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Release\net9.0\MoviesServer.pdb
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Release\net9.0\MoviesServer.genruntimeconfig.cache
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Release\net9.0\ref\MoviesServer.dll
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\web.config
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\appsettings.Development.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\appsettings.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\MoviesServer.deps.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\MoviesServer.runtimeconfig.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Release\net9.0\publish\MoviesServer.staticwebassets.endpoints.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Release\net9.0\staticwebassets.upToDateCheck.txt
