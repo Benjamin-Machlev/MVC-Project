@@ -9,6 +9,7 @@ import requests
 class UpdateMovieForm(QWidget):
     update_movie_signal = Signal(dict)
     go_back_signal = Signal()
+    go_back_to_single_movie_signal = Signal(object)
 
     def __init__(self, parent=None, movie=None):
         super().__init__(parent)
@@ -99,8 +100,9 @@ class UpdateMovieForm(QWidget):
         self.movie_description_input.setFixedHeight(50)
 
         self.movie_response_input = QTextEdit(self)
-        self.movie_response_input.setPlaceholderText('Enter movie response')
-        self.movie_response_input.setFixedHeight(50)
+        self.movie_response_input.setPlaceholderText('Responses will be displayed here')
+        self.movie_response_input.setFixedHeight(100)
+        self.movie_response_input.setReadOnly(True)
 
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
         additional_layout.addRow(self.rating_label)
@@ -145,8 +147,12 @@ class UpdateMovieForm(QWidget):
         back_button = QPushButton("Back to Movie List", self)
         back_button.clicked.connect(self.go_back)
 
+        back_to_single_movie_button = QPushButton("Back to Single Movie View", self)
+        back_to_single_movie_button.clicked.connect(self.go_back_to_single_movie)
+
         button_layout.addWidget(self.update_button)
         button_layout.addWidget(back_button)
+        button_layout.addWidget(back_to_single_movie_button)
         button_layout.setAlignment(Qt.AlignCenter)
 
         self.layout.addLayout(button_layout)
@@ -172,3 +178,6 @@ class UpdateMovieForm(QWidget):
 
     def go_back(self):
         self.go_back_signal.emit()
+
+    def go_back_to_single_movie(self):
+        self.go_back_to_single_movie_signal.emit(self.movie)
