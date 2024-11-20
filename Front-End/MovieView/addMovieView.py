@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator
+from id_manager import load_current_id, save_current_id
 
 class AddMovieForm(QWidget):
     add_movie_signal = Signal(dict)
@@ -13,6 +14,7 @@ class AddMovieForm(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
+        self.current_movie_id = load_current_id()  # Load movie ID from file
         self.setup_ui()
 
     def setup_ui(self):
@@ -28,9 +30,7 @@ class AddMovieForm(QWidget):
         basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
         
-        self.movie_id_input = QLineEdit(self)
-        self.movie_id_input.setValidator(QIntValidator(1, 9999999, self))
-        self.movie_id_input.setPlaceholderText('Enter movie ID')
+        self.movie_id_label = QLabel(f"{self.current_movie_id}", self)
         
         self.movie_title_input = QLineEdit(self)
         self.movie_title_input.setPlaceholderText('Enter movie title')
@@ -51,7 +51,7 @@ class AddMovieForm(QWidget):
         self.image_path_label = QLabel(self)
         basic_layout.addRow(QLabel('Image Path:'), self.image_path_label)
 
-        basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_input)
+        basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_label)
         basic_layout.addRow(QLabel('Title:'), self.movie_title_input)
         basic_layout.addRow(QLabel('Director:'), self.movie_director_input)
         basic_layout.addRow(QLabel('Release Year:'), self.movie_release_year_input)
@@ -133,8 +133,9 @@ class AddMovieForm(QWidget):
         self.layout.addLayout(button_layout)
 
     def add_movie(self):
+        self.current_movie_id = load_current_id()  # Reload movie ID from file
         movie_data = {
-            "movieID": self.movie_id_input.text(),
+            "movieID": self.current_movie_id,
             "title": self.movie_title_input.text(),
             "director": self.movie_director_input.text(),
             "releaseYear": self.movie_release_year_input.currentText(),
@@ -145,11 +146,32 @@ class AddMovieForm(QWidget):
             "responses": [self.movie_response_input.toPlainText()],
             "image": self.image_path_label.text()
         }
+        self.current_movie_id += 1  # Increment movie ID for next addition
+        save_current_id(self.current_movie_id)  # Save the updated movie ID to file
         self.add_movie_signal.emit(movie_data)
+        self.reset_form()  # Reset the form for the next movie
         self.go_back_signal.emit()  # Return to movie list after adding
 
+    def reset_form(self):
+        self.movie_id_label.setText(f"Movie ID: {self.current_movie_id}")
+        self.movie_title_input.clear()
+        self.movie_director_input.clear()
+        self.movie_release_year_input.setCurrentIndex(0)
+        self.movie_runtime_input.clear()
+        self.image_path_label.clear()
+        for checkbox in self.genre_checkboxes:
+            checkbox.setChecked(False)
+        self.movie_rating_input.setValue(10)
+        self.movie_description_input.clear()
+        self.movie_response_input.clear()
+
     def go_back(self):
+        self.reset_form()  # Reset the form before going back
         self.go_back_signal.emit()
 
     def update_rating_label(self, value):
         self.rating_label.setText(f"{value / 10:.1f}")
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.reset_form()  # Reset the form every time the widget is shown

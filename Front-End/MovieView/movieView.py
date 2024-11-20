@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QScrollArea
 )
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QTimer
 from MovieView.singelMovieView import SingleMovieView
 from MovieView.addMovieView import AddMovieForm 
 from Entity.movie import Movie
@@ -94,8 +94,11 @@ class MovieView(QMainWindow):
 
         self.showMaximized()  # Move this line here to maximize after UI initialization
 
+        self.search_button.clicked.connect(self.search_movie)
 
     def show_movie_list(self):
+        if hasattr(self, 'no_results_label'):
+            self.no_results_label.hide()
         self.stacked_widget.setCurrentWidget(self.movie_list_widget)
         self.update_add_button_state()
 
@@ -138,11 +141,18 @@ class MovieView(QMainWindow):
         self.search_input.setPlaceholderText("Search movies...")
         self.search_input.setFixedSize(300, 30)
         self.search_input.setStyleSheet("color: white;")
-        self.top_bar_layout.addWidget(self.search_input)
 
+        self.no_results_label = QLabel("", self)
+        self.no_results_label.setStyleSheet("color: red; font-size: 16px;")
+        self.no_results_label.setAlignment(Qt.AlignCenter)
+        self.no_results_label.hide()
+        
         self.search_button = QPushButton("Search")
         self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.search_button.setFixedSize(300, 30)
+        
+        self.top_bar_layout.addWidget(self.no_results_label)  # Place it right next to the search input
+        self.top_bar_layout.addWidget(self.search_input)
         self.top_bar_layout.addWidget(self.search_button)
 
         self.top_bar_layout.addStretch(1)
@@ -230,6 +240,23 @@ class MovieView(QMainWindow):
         self.movies = movies
         self.create_movie_list(movies)
         self.stacked_widget.setCurrentWidget(self.movie_list_widget)
+
+    def search_movie(self):
+        search_text = self.search_input.text().strip().lower()
+        if not search_text:
+            self.show_movie_list()
+            return
+
+        filtered_movies = [movie for movie in self.movies if search_text in movie.title.lower()]
+        if filtered_movies:
+            self.show_movie(filtered_movies[0])
+        else:
+            self.show_no_results()
+
+    def show_no_results(self):
+        self.no_results_label.setText("No results found.")
+        self.no_results_label.show()
+        QTimer.singleShot(5000, self.no_results_label.hide)
 
 
 
