@@ -14,7 +14,7 @@ class AddMovieForm(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-        self.current_movie_id = load_current_id()  # Load movie ID from file
+        self.current_movie_id = load_current_id()
         self.setup_ui()
 
     def setup_ui(self):
@@ -25,7 +25,6 @@ class AddMovieForm(QWidget):
         self.layout.setAlignment(Qt.AlignCenter)
 
     def setup_inputs(self, main_layout):
-        # Group Basic Info
         basic_info_group = QGroupBox("Basic Info")
         basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
@@ -60,7 +59,6 @@ class AddMovieForm(QWidget):
 
         basic_info_group.setLayout(basic_layout)
 
-        # Group Genres
         genre_group = QGroupBox("Genres")
         genre_group.setFixedWidth(500)
         genre_group.setFixedHeight(170)
@@ -71,11 +69,10 @@ class AddMovieForm(QWidget):
         for i, genre in enumerate(genres):
             checkbox = QCheckBox(genre, self)
             self.genre_checkboxes.append(checkbox)
-            genre_layout.addWidget(checkbox, i // 3, i % 3)  # Arrange in a grid with 3 columns
+            genre_layout.addWidget(checkbox, i // 3, i % 3)
         
         genre_group.setLayout(genre_layout)
 
-        # Group Additional Info
         additional_info_group = QGroupBox("Additional Info")
         additional_info_group.setFixedWidth(500)
         additional_layout = QFormLayout()
@@ -133,7 +130,7 @@ class AddMovieForm(QWidget):
         self.layout.addLayout(button_layout)
 
     def add_movie(self):
-        self.current_movie_id = load_current_id()  # Reload movie ID from file
+        self.current_movie_id = load_current_id()
         movie_data = {
             "movieID": self.current_movie_id,
             "title": self.movie_title_input.text(),
@@ -146,11 +143,11 @@ class AddMovieForm(QWidget):
             "responses": [self.movie_response_input.toPlainText()],
             "image": self.image_path_label.text()
         }
-        self.current_movie_id += 1  # Increment movie ID for next addition
-        save_current_id(self.current_movie_id)  # Save the updated movie ID to file
+        self.current_movie_id += 1
+        save_current_id(self.current_movie_id)
         self.add_movie_signal.emit(movie_data)
-        self.reset_form()  # Reset the form for the next movie
-        self.go_back_signal.emit()  # Return to movie list after adding
+        self.reset_form()
+        self.go_back_signal.emit()
 
     def reset_form(self):
         self.movie_id_label.setText(f"Movie ID: {self.current_movie_id}")
@@ -166,7 +163,7 @@ class AddMovieForm(QWidget):
         self.movie_response_input.clear()
 
     def go_back(self):
-        self.reset_form()  # Reset the form before going back
+        self.reset_form()
         self.go_back_signal.emit()
 
     def update_rating_label(self, value):
@@ -174,4 +171,4 @@ class AddMovieForm(QWidget):
 
     def showEvent(self, event):
         super().showEvent(event)
-        self.reset_form()  # Reset the form every time the widget is shown
+        self.reset_form()

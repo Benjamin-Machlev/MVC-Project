@@ -1,10 +1,8 @@
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTextEdit,
-    QScrollArea, QListWidget, QListWidgetItem, QSizePolicy, QGroupBox, QApplication)
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit,
+    QScrollArea, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import (QPropertyAnimation, QPoint, QEasingCurve, QParallelAnimationGroup, Qt,
-                            QSequentialAnimationGroup, QPropertyAnimation, QAbstractAnimation, QAnimationGroup,
-                            QPauseAnimation, Signal, QTimer)
+from PySide6.QtCore import (Qt, Signal, QTimer)
 
 from MovieView.updateMovieView import UpdateMovieForm
 
@@ -24,22 +22,17 @@ class SingleMovieView(QWidget):
 
     def init_ui(self):
         main_layout = QHBoxLayout(self)
-        main_layout.setContentsMargins(150, 0, 150, 0)  # Add margins: left, top, right, bottom
+        main_layout.setContentsMargins(150, 0, 150, 0)
 
-        # Left side: movie details
         details_layout = self.create_details_layout()
         main_layout.addLayout(details_layout, stretch=1)
 
-        # Right side: description, responses, and actions
         right_side_layout = QVBoxLayout()
-
-        # Description and responses
         description_and_responses_layout = self.create_description_and_responses_layout()
         right_side_layout.addLayout(description_and_responses_layout, stretch=3)
 
-        # Action buttons
         actions_layout = self.create_actions_layout()
-        right_side_layout.addWidget(actions_layout)  # Use addWidget instead of addLayout
+        right_side_layout.addWidget(actions_layout)
 
         main_layout.addLayout(right_side_layout, stretch=2)
 
@@ -89,7 +82,6 @@ class SingleMovieView(QWidget):
     def create_description_and_responses_layout(self):
         layout = QVBoxLayout()
 
-        # Description Group
         description_group = QGroupBox("Description")
         description_layout = QVBoxLayout()
         self.description_text = QLabel()
@@ -99,7 +91,6 @@ class SingleMovieView(QWidget):
         description_group.setLayout(description_layout)
         layout.addWidget(description_group)
 
-        # Responses Group
         responses_group = QGroupBox("Responses")
         responses_layout = QVBoxLayout()
 
@@ -109,13 +100,12 @@ class SingleMovieView(QWidget):
         responses_widget = QWidget()
         responses_widget.setLayout(self.responses_list)
         scroll_area.setWidget(responses_widget)
-        scroll_area.setFixedSize(800, 300)  # Reduce the height
+        scroll_area.setFixedSize(800, 300)
         responses_layout.addWidget(scroll_area)
 
-        # Add response area
-        add_response_layout = QVBoxLayout()  # Change to QVBoxLayout to add message label below
+        add_response_layout = QVBoxLayout()
         input_layout = QHBoxLayout()
-        self.new_response_input = QTextEdit()  # Change to QTextEdit to allow multi-line input
+        self.new_response_input = QTextEdit()
         self.new_response_input.setFixedSize(300, 60)
         self.new_response_input.setPlaceholderText("Enter your response...")
         add_response_button = QPushButton("Add response")
@@ -138,8 +128,8 @@ class SingleMovieView(QWidget):
 
     def create_actions_layout(self):
         actions_group = QGroupBox("Actions")
-        actions_layout = QHBoxLayout()  # Change to QHBoxLayout to arrange buttons side by side
-        actions_layout.setAlignment(Qt.AlignCenter)  # Center the buttons
+        actions_layout = QHBoxLayout()
+        actions_layout.setAlignment(Qt.AlignCenter)
         
         button_style = """
             QPushButton {
@@ -147,38 +137,34 @@ class SingleMovieView(QWidget):
                 border-radius: 10px;
                 padding: 5px;
                 margin: 5px;
-                
             }
             QPushButton:hover {
                 background-color: #e0e0e0;
-                
             }
         """
         
-        # Update and delete buttons
         update_button = QPushButton("Update Movie Info")
-        update_button.setFixedSize(200, 80)  # Set button size
+        update_button.setFixedSize(200, 80)
         update_button.setIcon(QIcon(r"Front-End\movies img/update.svg"))
         update_button.setLayoutDirection(Qt.RightToLeft)
         update_button.setStyleSheet(button_style)
-        update_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        update_button.setCursor(Qt.CursorShape.PointingHandCursor)
         update_button.clicked.connect(self.show_update_movie_form)
 
         delete_button = QPushButton("Delete Movie")
-        delete_button.setFixedSize(200, 80)  # Set button size
+        delete_button.setFixedSize(200, 80)
         delete_button.setIcon(QIcon(r"Front-End\movies img/delete.svg"))
         delete_button.setLayoutDirection(Qt.RightToLeft)
         delete_button.setStyleSheet(button_style)
-        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
         delete_button.clicked.connect(self.delete_movie)
         
-        # Back button
         back_button = QPushButton("Back to Movie List")
-        back_button.setFixedSize(200, 80)  # Set button size
+        back_button.setFixedSize(200, 80)
         back_button.setIcon(QIcon(r"Front-End\movies img/menu.svg"))
         back_button.setLayoutDirection(Qt.RightToLeft)
         back_button.setStyleSheet(button_style)
-        back_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        back_button.setCursor(Qt.CursorShape.PointingHandCursor)
         back_button.clicked.connect(self.back_to_movie_list)
         
         actions_layout.addWidget(update_button)
@@ -192,9 +178,8 @@ class SingleMovieView(QWidget):
         self.show_update_movie_form_signal.emit(self.movie)
 
     def delete_movie(self):
-        print(f"Deleting movie with ID: {self.movie.movieID}")  # Debug print
         self.delete_movie_signal.emit(self.movie.movieID)
-        self.back_to_movie_list_signal.emit()  # Return to movie list after deleting
+        self.back_to_movie_list_signal.emit()
 
     def set_movie(self, movie):
         self.movie = movie
@@ -221,7 +206,7 @@ class SingleMovieView(QWidget):
                 response_label = QLabel(response)
                 response_label.setWordWrap(True)
                 response_label.setStyleSheet("""
-                    color:  #237, 231, 178;
+                    color: #237, 231, 178;
                     background-color: #000000;
                     border: 1px solid #d0d0d0;
                     border-radius: 10px;
@@ -229,11 +214,6 @@ class SingleMovieView(QWidget):
                     margin: 5px 0;
                 """)
                 self.responses_list.addWidget(response_label)
-
-    def handle_return_pressed(self):
-        if self.new_response_input.text().strip():
-            self.new_response_input.setText(self.new_response_input.text() + '\n')
-            self.new_response_input.setFocus()
 
     def add_response(self):
         response_text = self.new_response_input.toPlainText().strip()

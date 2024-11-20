@@ -100,6 +100,7 @@ class MovieView(QMainWindow):
     def show_movie_list(self):
         if hasattr(self, 'no_results_label'):
             self.no_results_label.hide()
+        self.search_input.clear()  # Clear the search input
         self.stacked_widget.setCurrentWidget(self.movie_list_widget)
         self.update_add_button_state()
 

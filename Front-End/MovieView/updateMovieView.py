@@ -13,7 +13,6 @@ class UpdateMovieForm(QWidget):
 
     def __init__(self, parent=None, movie=None):
         super().__init__(parent)
-        self.parent = parent
         self.movie = movie
         self.setup_ui()
         if self.movie:
