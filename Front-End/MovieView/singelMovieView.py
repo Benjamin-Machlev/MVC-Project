@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import (QPropertyAnimation, QPoint, QEasingCurve, QParallelAnimationGroup, Qt,
                             QSequentialAnimationGroup, QPropertyAnimation, QAbstractAnimation, QAnimationGroup,
-                            QPauseAnimation, Signal)
+                            QPauseAnimation, Signal, QTimer)
 
 from MovieView.updateMovieView import UpdateMovieForm
 
@@ -19,6 +19,8 @@ class SingleMovieView(QWidget):
         self.movie = movie
         self.parent = parent
         self.init_ui()
+        if self.parent.update_movie_form_widget:
+            self.parent.update_movie_form_widget.go_back_to_single_movie_signal.connect(self.show_movie)
 
     def init_ui(self):
         main_layout = QHBoxLayout(self)
@@ -111,15 +113,22 @@ class SingleMovieView(QWidget):
         responses_layout.addWidget(scroll_area)
 
         # Add response area
-        add_response_layout = QHBoxLayout()
-        self.new_response_input = QLineEdit()
-        self.new_response_input.setFixedSize(300, 30)
+        add_response_layout = QVBoxLayout()  # Change to QVBoxLayout to add message label below
+        input_layout = QHBoxLayout()
+        self.new_response_input = QTextEdit()  # Change to QTextEdit to allow multi-line input
+        self.new_response_input.setFixedSize(300, 60)
         self.new_response_input.setPlaceholderText("Enter your response...")
         add_response_button = QPushButton("Add response")
         add_response_button.setFixedSize(200, 30)
         add_response_button.clicked.connect(self.add_response)
-        add_response_layout.addWidget(self.new_response_input, alignment=Qt.AlignLeft)
-        add_response_layout.addWidget(add_response_button, alignment=Qt.AlignLeft)
+        input_layout.addWidget(self.new_response_input, alignment=Qt.AlignLeft)
+        input_layout.addWidget(add_response_button, alignment=Qt.AlignLeft)
+        add_response_layout.addLayout(input_layout)
+
+        self.response_message_label = QLabel("")
+        self.response_message_label.setStyleSheet("color: red;")
+        add_response_layout.addWidget(self.response_message_label, alignment=Qt.AlignLeft)
+
         responses_layout.addLayout(add_response_layout)
 
         responses_group.setLayout(responses_layout)
@@ -221,9 +230,23 @@ class SingleMovieView(QWidget):
                 """)
                 self.responses_list.addWidget(response_label)
 
+    def handle_return_pressed(self):
+        if self.new_response_input.text().strip():
+            self.new_response_input.setText(self.new_response_input.text() + '\n')
+            self.new_response_input.setFocus()
+
     def add_response(self):
-        self.add_response_signal.emit(self.movie, self.new_response_input.text())
-        self.new_response_input.clear()
+        response_text = self.new_response_input.toPlainText().strip()
+        if not response_text:
+            self.response_message_label.setText("Response cannot be empty")
+            QTimer.singleShot(5000, lambda: self.response_message_label.setText(""))
+        else:
+            self.add_response_signal.emit(self.movie, response_text)
+            self.new_response_input.clear()
 
     def back_to_movie_list(self):
         self.back_to_movie_list_signal.emit()
+
+    def show_movie(self, movie):
+        self.set_movie(movie)
+        self.show()
