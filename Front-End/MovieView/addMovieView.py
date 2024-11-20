@@ -1,3 +1,4 @@
+import requests
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
@@ -133,15 +134,16 @@ class AddMovieForm(QWidget):
 
     def add_movie(self):
         movie_data = {
-            "movie_id": self.movie_id_input.text(),
+            "movieID": self.movie_id_input.text(),
             "title": self.movie_title_input.text(),
             "director": self.movie_director_input.text(),
-            "release_year": self.movie_release_year_input.currentText(),
+            "releaseYear": self.movie_release_year_input.currentText(),
             "runtime": self.movie_runtime_input.text(),
             "genres": [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()],
             "rating": self.movie_rating_input.value() / 10,
             "description": self.movie_description_input.toPlainText(),
-            "response": self.movie_response_input.toPlainText()
+            "responses": [self.movie_response_input.toPlainText()],
+            "image": self.image_path_label.text()
         }
         self.add_movie_signal.emit(movie_data)
         self.go_back_signal.emit()  # Return to movie list after adding
