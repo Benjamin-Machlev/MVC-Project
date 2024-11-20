@@ -71,7 +71,6 @@ C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.MoviesServer.props
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.MoviesServer.props
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\staticwebassets.pack.json
-C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\MoviesSe.668B7601.Up2Date
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\MoviesServer.dll
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\refint\MoviesServer.dll
@@ -81,3 +80,10 @@ C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\web.config
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\appsettings.Development.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\appsettings.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\MoviesServer.deps.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\MoviesServer.runtimeconfig.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\bin\Debug\net9.0\publish\MoviesServer.staticwebassets.endpoints.json
+C:\Users\User\source\repos\MVC - Project\Back-End\MoviesServer\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
