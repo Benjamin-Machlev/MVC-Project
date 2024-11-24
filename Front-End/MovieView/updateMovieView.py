@@ -98,15 +98,9 @@ class UpdateMovieForm(QWidget):
         self.movie_description_input.setPlaceholderText('Enter movie description')
         self.movie_description_input.setFixedHeight(50)
 
-        self.movie_response_input = QTextEdit(self)
-        self.movie_response_input.setPlaceholderText('Responses will be displayed here')
-        self.movie_response_input.setFixedHeight(100)
-        self.movie_response_input.setReadOnly(True)
-
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
         additional_layout.addRow(self.rating_label)
         additional_layout.addRow(QLabel('Description:'), self.movie_description_input)
-        additional_layout.addRow(QLabel('Response:'), self.movie_response_input)
         
         additional_info_group.setLayout(additional_layout)
 
@@ -121,7 +115,6 @@ class UpdateMovieForm(QWidget):
         self.movie_release_year_input.setCurrentText(str(self.movie.release_year))
         self.movie_runtime_input.setText(str(self.movie.runtime))
         self.movie_description_input.setText(self.movie.description)
-        self.movie_response_input.setText("\n".join(self.movie.responses))
         self.movie_rating_input.setValue(int(self.movie.rating * 10))
         self.image_path_label.setText(self.movie.image)
         # Set genres
@@ -166,8 +159,8 @@ class UpdateMovieForm(QWidget):
             "genres": [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()],
             "rating": self.movie_rating_input.value() / 10,
             "description": self.movie_description_input.toPlainText(),
-            "response": self.movie_response_input.toPlainText(),
-            "image": self.image_path_label.text()
+            "image": self.image_path_label.text(),
+            "responses": self.movie.responses  # Include existing responses
         }
         self.update_movie_signal.emit(movie_data)
         self.go_back_signal.emit()  # Return to movie list after updating

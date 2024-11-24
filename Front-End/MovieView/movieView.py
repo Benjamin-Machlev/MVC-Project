@@ -75,6 +75,7 @@ class MovieView(QMainWindow):
         self.singel_movie_view.show_update_movie_form_signal.connect(self.controller.show_update_movie_form)
         self.singel_movie_view.delete_movie_signal.connect(self.controller.delete_movie)
         self.singel_movie_view.add_response_signal.connect(self.controller.add_response)
+        self.singel_movie_view.delete_response_signal.connect(self.controller.delete_response)
         self.singel_movie_view.back_to_movie_list_signal.connect(self.show_movie_list)
         self.update_movie_form_widget.update_movie_signal.connect(self.controller.update_movie)
         self.update_movie_form_widget.go_back_signal.connect(self.show_movie_list)

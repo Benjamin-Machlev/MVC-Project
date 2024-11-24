@@ -11,6 +11,7 @@ class SingleMovieView(QWidget):
     delete_movie_signal = Signal(int)
     add_response_signal = Signal(object, str)
     back_to_movie_list_signal = Signal()
+    delete_response_signal = Signal(object, str)
 
     def __init__(self, parent=None, movie=None):
         super().__init__(parent)
@@ -203,6 +204,7 @@ class SingleMovieView(QWidget):
             self.responses_list.itemAt(i).widget().setParent(None)
         if self.movie:
             for response in self.movie.responses:
+                response_layout = QHBoxLayout()
                 response_label = QLabel(response)
                 response_label.setWordWrap(True)
                 response_label.setStyleSheet("""
@@ -213,7 +215,17 @@ class SingleMovieView(QWidget):
                     padding: 5px;
                     margin: 5px 0;
                 """)
-                self.responses_list.addWidget(response_label)
+                delete_button = QPushButton()
+                delete_button.setIcon(QIcon(r"Front-End\movies img/delete.svg"))
+                delete_button.setFixedSize(30, 30)
+                delete_button.setStyleSheet("border: none;")
+                delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
+                delete_button.clicked.connect(lambda _, r=response: self.delete_response(r))
+                response_layout.addWidget(response_label)
+                response_layout.addWidget(delete_button)
+                response_widget = QWidget()
+                response_widget.setLayout(response_layout)
+                self.responses_list.addWidget(response_widget)
 
     def add_response(self):
         response_text = self.new_response_input.toPlainText().strip()
@@ -223,6 +235,11 @@ class SingleMovieView(QWidget):
         else:
             self.add_response_signal.emit(self.movie, response_text)
             self.new_response_input.clear()
+
+    def delete_response(self, response):
+        if response in self.movie.responses:
+            self.delete_response_signal.emit(self.movie, response)
+            self.update_responses_list()
 
     def back_to_movie_list(self):
         self.back_to_movie_list_signal.emit()

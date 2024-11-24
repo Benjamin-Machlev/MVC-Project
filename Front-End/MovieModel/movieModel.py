@@ -145,4 +145,18 @@ class MovieModel:
                 return movie
         return None
 
+    def delete_response(self, movie_id, response):
+        print(f"Model: Sending delete response request for movie ID: {movie_id}")  # Debug print
+        url = f"http://localhost:5156/api/movies/{movie_id}/responses"
+        response_data = {"response": response}
+        response = requests.delete(url, json=response_data)
+        if response.status_code == 200:
+            print(f"Model: Successfully deleted response for movie ID: {movie_id}")  # Debug print
+            movie = self.get_movie(movie_id)
+            if movie:
+                movie.responses.remove(response)
+                self.send_update_request(movie_id, movie)  # Update the movie on the server
+        else:
+            print(f"Model: Failed to delete response for movie ID: {movie_id}, status code: {response.status_code}")  # Debug print
+
 
