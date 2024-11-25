@@ -166,3 +166,25 @@ Back-End/MoviesServer/.vs/
 
 **/AssemblyInfo.cs
 **/AssemblyInfoInputs.cache
+
+# Ignore all files in the 'obj' folder (Build artifacts)
+**/obj/
+
+# Ignore specific files in 'obj' folder
+**/obj/*.cache
+**/obj/*.json
+**/obj/*.props
+**/obj/*.cs
+**/obj/*.editorconfig
+**/obj/*.EndpointInfo
+
+# Ignore all files in the 'bin' folder (Build output)
+**/bin/
+
+# Ignore auto-generated AssemblyInfo files
+**/obj/**/*.AssemblyInfo.cs
+
+# Ignore MSBuild specific generated files
+**/obj/**/*.g.*
+**/obj/**/*.AssemblyReference.cache
+
