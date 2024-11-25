@@ -14,10 +14,8 @@ class MovieModel:
             movies_data = response.json()
             self.movies = [
                 Movie(
-                    movie["movieID"], movie["title"], movie["director"],
-                    movie["releaseYear"], movie["genre"], movie["rating"],
-                    movie["runtime"], movie["description"], movie["responses"],
-                    movie["image"]
+                    movie["movieID"], movie["title"], movie["releaseYear"], movie["genre"], movie["rating"],
+                    movie["runtime"], movie["description"], movie["responses"], movie["image"]
                 ) for movie in movies_data
             ]
         else:
@@ -35,8 +33,7 @@ class MovieModel:
         print(Fore.GREEN + f"Model.add_movie: Response content: {response.content}")  # Debug print
         if response.status_code == 201:
             movie = Movie(
-                movie_data["movieID"], movie_data["title"], movie_data["director"],
-                movie_data["releaseYear"], movie_data["Genre"],
+                movie_data["movieID"], movie_data["title"], movie_data["releaseYear"], movie_data["Genre"],
                 movie_data["rating"], movie_data["runtime"], movie_data["description"],
                 movie_data["responses"], movie_data["image"]
             )
@@ -67,7 +64,6 @@ class MovieModel:
         movie_data = {
             "movieID": updated_movie.movieID,  # Ensure this matches the backend expectation
             "title": updated_movie.title,
-            "director": updated_movie.director,
             "releaseYear": int(updated_movie.release_year),  # Ensure this matches the backend expectation
             "genre": updated_movie.genre,  # Ensure this matches the backend expectation
             "rating": float(updated_movie.rating),  # Ensure this matches the backend expectation

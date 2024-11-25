@@ -67,7 +67,6 @@ class SingleMovieView(QWidget):
 
         self.details_labels = {
             "movie_id": QLabel(),
-            "director": QLabel(),
             "genre": QLabel(),
             "rating": QLabel(),
             "runtime": QLabel(),
@@ -192,7 +191,6 @@ class SingleMovieView(QWidget):
             self.title_label.setText(self.movie.title)
             self.year_label.setText(str(self.movie.release_year))
             self.details_labels["movie_id"].setText(f"Movie ID: {self.movie.movieID}")
-            self.details_labels["director"].setText(f"Director: {self.movie.director}")
             self.details_labels["genre"].setText(f"Genre: {self.movie.genre}")
             self.details_labels["rating"].setText(f"Rating: {self.movie.rating}")
             self.details_labels["runtime"].setText(f"Runtime: {self.movie.runtime} mins")

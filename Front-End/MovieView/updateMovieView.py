@@ -39,9 +39,6 @@ class UpdateMovieForm(QWidget):
         self.movie_title_input = QLineEdit(self)
         self.movie_title_input.setPlaceholderText('Enter movie title')
         
-        self.movie_director_input = QLineEdit(self)
-        self.movie_director_input.setPlaceholderText('Enter movie director')
-        
         self.movie_release_year_input = QComboBox(self)
         self.movie_release_year_input.addItems([str(year) for year in range(1900, 2026)])
         
@@ -57,7 +54,6 @@ class UpdateMovieForm(QWidget):
 
         basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_input)
         basic_layout.addRow(QLabel('Title:'), self.movie_title_input)
-        basic_layout.addRow(QLabel('Director:'), self.movie_director_input)
         basic_layout.addRow(QLabel('Release Year:'), self.movie_release_year_input)
         basic_layout.addRow(QLabel('Runtime:'), self.movie_runtime_input)
         basic_layout.addRow(QLabel('Image:'), self.movie_image_input)
@@ -111,7 +107,6 @@ class UpdateMovieForm(QWidget):
     def populate_fields(self):
         self.movie_id_input.setText(str(self.movie.movieID))
         self.movie_title_input.setText(self.movie.title)
-        self.movie_director_input.setText(self.movie.director)
         self.movie_release_year_input.setCurrentText(str(self.movie.release_year))
         self.movie_runtime_input.setText(str(self.movie.runtime))
         self.movie_description_input.setText(self.movie.description)
@@ -153,7 +148,6 @@ class UpdateMovieForm(QWidget):
         movie_data = {
             "movie_id": self.movie_id_input.text(),
             "title": self.movie_title_input.text(),
-            "director": self.movie_director_input.text(),
             "release_year": self.movie_release_year_input.currentText(),
             "runtime": self.movie_runtime_input.text(),
             "genres": [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()],
