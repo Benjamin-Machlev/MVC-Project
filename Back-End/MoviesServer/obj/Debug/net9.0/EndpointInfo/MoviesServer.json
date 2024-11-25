@@ -204,10 +204,6 @@
             "type": "string",
             "nullable": true
           },
-          "director": {
-            "type": "string",
-            "nullable": true
-          },
           "releaseYear": {
             "type": "integer",
             "format": "int32"
