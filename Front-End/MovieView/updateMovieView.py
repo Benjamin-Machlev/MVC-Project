@@ -3,8 +3,9 @@ from PySide6.QtWidgets import (
     QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
 )
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QIntValidator
+from PySide6.QtGui import QIntValidator, QPixmap
 import requests
+import validators  # Add this import
 
 class UpdateMovieForm(QWidget):
     update_movie_signal = Signal(dict)
@@ -50,8 +51,8 @@ class UpdateMovieForm(QWidget):
         self.movie_image_input.clicked.connect(self.upload_image)
 
         self.image_path_label = QLabel(self)
-        basic_layout.addRow(QLabel('Image Path:'), self.image_path_label)
 
+        basic_layout.addRow(QLabel('Image Path:'), self.image_path_label)
         basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_input)
         basic_layout.addRow(QLabel('Title:'), self.movie_title_input)
         basic_layout.addRow(QLabel('Release Year:'), self.movie_release_year_input)
@@ -61,7 +62,7 @@ class UpdateMovieForm(QWidget):
         basic_info_group.setLayout(basic_layout)
 
         # Group Genres
-        genre_group = QGroupBox("Genres")
+        genre_group = QGroupBox("Genres")  # Define genre_group here
         genre_group.setFixedWidth(500)
         genre_group.setFixedHeight(170)
         genre_layout = QGridLayout()
@@ -141,7 +142,7 @@ class UpdateMovieForm(QWidget):
         self.image_path_label.setText(self.movie.image)
         # Set genres
         for checkbox in self.genre_checkboxes:
-            if checkbox.text() in self.movie.genre.split(", "):
+            if checkbox.text() in self.movie.genre.split(", "):  # Fix the unmatched parenthesis here
                 checkbox.setChecked(True)
 
     def upload_image(self):

@@ -21,6 +21,8 @@ from MovieView.singelMovieView import SingleMovieView
 from MovieView.addMovieView import AddMovieForm 
 from Entity.movie import Movie
 from MovieView.updateMovieView import UpdateMovieForm
+import validators  # Add this import
+import requests  # Add this import
 
 
 class MovieView(QMainWindow):
@@ -201,9 +203,13 @@ class MovieView(QMainWindow):
         self.stacked_widget.addWidget(self.movie_list_widget)  # Add the movie list widget to the stacked widget
 
     def create_movie_frame(self, movie):
-
         image_button = QPushButton()
-        image_button.setIcon(QPixmap(movie.image))
+        if validators.url(movie.image):
+            image = QPixmap()
+            image.loadFromData(requests.get(movie.image).content)
+        else:
+            image = QPixmap(movie.image)
+        image_button.setIcon(image)
         image_button.setIconSize(QSize(200, 315))
         image_button.setFixedSize(QSize(200, 315))
         image_button.setCursor(Qt.CursorShape.PointingHandCursor)

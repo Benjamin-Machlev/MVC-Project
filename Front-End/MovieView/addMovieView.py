@@ -1,11 +1,12 @@
 import requests
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout, QInputDialog  # Add this import
 )
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QIntValidator
+from PySide6.QtGui import QIntValidator, QPixmap
 from id_manager import load_current_id, save_current_id
+import validators  # Add this import
 
 class AddMovieForm(QWidget):
     add_movie_signal = Signal(dict)
@@ -46,8 +47,7 @@ class AddMovieForm(QWidget):
 
         self.image_path_label = QLabel(self)
         basic_layout.addRow(QLabel('Image Path:'), self.image_path_label)
-
-        basic_layout.addRow(QLabel('Movie ID:'), self.movie_id_label)
+        basic_layout.addRow(QLabel('Movie ID:'),self.movie_id_label)
         basic_layout.addRow(QLabel('Title:'), self.movie_title_input)
         basic_layout.addRow(QLabel('Release Year:'), self.movie_release_year_input)
         basic_layout.addRow(QLabel('Runtime:'), self.movie_runtime_input)
@@ -133,11 +133,20 @@ class AddMovieForm(QWidget):
     def upload_image(self):
         file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.ExistingFile)
-        file_dialog.setNameFilter("Images (*.png *.xpm *.jpg)")
+        file_dialog.setNameFilter("Images (*.png *.xpm *.jpg *.jpeg)")
         
         if file_dialog.exec_():
             file_path = file_dialog.selectedFiles()[0]
             self.image_path_label.setText(file_path)
+            self.display_image(file_path)
+
+    def display_image(self, image_path):
+        if validators.url(image_path):
+            image = QPixmap()
+            image.loadFromData(requests.get(image_path).content)
+        else:
+            image = QPixmap(image_path)
+        self.movie_image.setPixmap(image.scaled(200, 300, Qt.KeepAspectRatio))
 
     def setup_buttons(self):
         button_layout = QHBoxLayout()
@@ -147,11 +156,32 @@ class AddMovieForm(QWidget):
         back_button = QPushButton("Back to Movie List", self)
         back_button.clicked.connect(self.go_back)
 
+        fetch_button = QPushButton("Fetch Movie Data", self)  # New button
+        fetch_button.clicked.connect(self.fetch_movie_data)  # Connect to new method
+
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(back_button)
+        button_layout.addWidget(fetch_button)  # Add new button to layout
         button_layout.setAlignment(Qt.AlignCenter)
 
         self.layout.addLayout(button_layout)
+
+    def fetch_movie_data(self):
+        movie_id = self.movie_id_label.text()
+        if movie_id:
+            self.parent.controller.fetch_movie_data(movie_id)  # Call controller method
+
+    def fill_form(self, movie_data):  # New method to fill the form
+        self.movie_title_input.setText(movie_data["title"])
+        self.movie_release_year_input.setCurrentText(str(movie_data["releaseYear"]))
+        self.movie_runtime_input.setText(str(movie_data["runtime"]))
+        self.image_path_label.setText(movie_data["image"])
+        for checkbox in self.genre_checkboxes:
+            checkbox.setChecked(checkbox.text() in movie_data["genre"])
+        self.movie_rating_input.setValue(int(movie_data["rating"]*10))
+        self.movie_description_input.setText(movie_data["description"])
+        self.movie_response_input.setText("\n".join(movie_data["responses"]))
+        self.display_image(movie_data["image"])
 
     def add_movie(self):
         self.current_movie_id = load_current_id()
@@ -173,7 +203,7 @@ class AddMovieForm(QWidget):
         self.go_back_signal.emit()
 
     def reset_form(self):
-        self.movie_id_label.setText(f"Movie ID: {self.current_movie_id}")
+        self.movie_id_label.setText(f"{self.current_movie_id}")
         self.movie_title_input.clear()
         self.movie_release_year_input.setCurrentIndex(0)
         self.movie_runtime_input.clear()

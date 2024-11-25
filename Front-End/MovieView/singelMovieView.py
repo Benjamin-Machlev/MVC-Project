@@ -3,6 +3,8 @@ from PySide6.QtWidgets import (
     QScrollArea, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import (Qt, Signal, QTimer)
+import validators  # Add this import
+import requests  # Add this import
 
 from MovieView.updateMovieView import UpdateMovieForm
 
@@ -184,10 +186,18 @@ class SingleMovieView(QWidget):
     def set_movie(self, movie):
         self.movie = movie
         self.update_ui()
+        self.display_image(self.movie.image)  # Ensure the image is displayed
+
+    def display_image(self, image_path):
+        if validators.url(image_path):
+            image = QPixmap()
+            image.loadFromData(requests.get(image_path).content)
+        else:
+            image = QPixmap(image_path)
+        self.movie_image.setPixmap(image.scaled(200, 300, Qt.KeepAspectRatio))
 
     def update_ui(self):
         if self.movie:
-            self.movie_image.setPixmap(QPixmap(self.movie.image).scaled(200, 300, Qt.KeepAspectRatio))
             self.title_label.setText(self.movie.title)
             self.year_label.setText(str(self.movie.release_year))
             self.details_labels["movie_id"].setText(f"Movie ID: {self.movie.movieID}")

@@ -35,7 +35,7 @@ class MovieController:
         existing_movie = self.movieModel.get_movie(int(movie_data["movie_id"]))
         existing_responses = existing_movie.responses if existing_movie else []
         movie = Movie(
-            movie_data["movie_id"], movie_data["title"], movie_data["director"],
+            movie_data["movie_id"], movie_data["title"],
             movie_data["release_year"], ", ".join(movie_data["genres"]),
             movie_data["rating"], movie_data["runtime"], movie_data["description"],
             existing_responses, movie_data["image"]
@@ -65,3 +65,8 @@ class MovieController:
         self.movieModel.initialize_movies()
         if self.movieView:
             self.movieView.update_movie_list(self.movieModel.movies)  # Update the movie list in the view
+
+    def fetch_movie_data(self, movie_id):
+        movie_data = self.movieModel.fetch_external_movie_data(movie_id)
+        if movie_data:
+            self.movieView.add_movie_form_widget.fill_form(movie_data)

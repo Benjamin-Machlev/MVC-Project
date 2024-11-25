@@ -126,6 +126,19 @@ class MovieModel:
             print(f"Request failed: {e}")
             return None
 
+    def fetch_external_movie_data(self, movie_id):
+        url = f"http://localhost:5156/api/movies/external/{movie_id}"
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Failed to fetch external movie data: {response.status_code}")
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return None
+
     def delete_movie(self, movie_id):
         print(f"Model: Sending delete request for movie ID: {movie_id}")  # Debug print
         response = requests.delete(f"http://localhost:5156/api/movies/{movie_id}")
