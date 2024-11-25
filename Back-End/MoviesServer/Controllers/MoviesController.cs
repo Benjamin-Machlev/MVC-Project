@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesServer.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace MoviesServer.Controllers
 {
@@ -74,6 +77,65 @@ namespace MoviesServer.Controllers
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        // GET: api/movies/external
+        [HttpGet("external")]
+        public async Task<ActionResult<List<Movie>>> GetMoviesFromExternalApi()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync("https://yts.mx/api/v2/list_movies.json");
+                var movies = JObject.Parse(response)["data"]["movies"].Select(m => new Movie
+                (
+                    movieID: (int)m["id"],
+                    title: (string)m["title"],
+                    releaseYear: (int)m["year"],
+                    genre: (string)m["genres"]?.FirstOrDefault(),
+                    rating: (decimal)m["rating"],
+                    runtime: (int)m["runtime"],
+                    description: GetMovieDescriptionFromExternalApi((int)m["id"]).Result.Value,
+                    responses: new List<string>(),
+                    image: (string)m["medium_cover_image"]
+                )).ToList();
+                return movies;
+            }
+        }
+
+        // GET: api/movies/external/{id}
+        [HttpGet("external/{id}")]
+        public async Task<ActionResult<Movie>> GetMovieFromExternalApi(int id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync($"https://yts.mx/api/v2/movie_details.json?movie_id={id}");
+                var movieData = JObject.Parse(response)["data"]["movie"];
+                var movie = new Movie
+                (
+                    movieID: (int)movieData["id"],
+                    title: (string)movieData["title"],
+                    releaseYear: (int)movieData["year"],
+                    genre: (string)movieData["genres"]?.FirstOrDefault(),
+                    rating: (decimal)movieData["rating"],
+                    runtime: (int)movieData["runtime"],
+                    description: (string)movieData["description_full"],
+                    responses: new List<string>(),
+                    image: (string)movieData["medium_cover_image"]
+                );
+                return movie;
+            }
+        }
+
+        // GET: api/movies/external/description/{movieId}
+        [HttpGet("external/description/{movieId}")]
+        public async Task<ActionResult<string>> GetMovieDescriptionFromExternalApi(int movieId)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync($"https://yts.mx/api/v2/movie_details.json?movie_id={movieId}");
+                var description = JObject.Parse(response)["data"]["movie"]["description_full"].ToString();
+                return description;
+            }
         }
     }
 }
