@@ -61,7 +61,35 @@ class AddMovieForm(QWidget):
         genre_layout = QGridLayout()
         
         self.genre_checkboxes = []
-        genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller']
+        genres = [
+            "Action",
+            "Adventure",
+            "Animation",
+            "Biography",
+            "Comedy",
+            "Crime",
+            "Documentary",
+            "Drama",
+            "Family",
+            "Fantasy",
+            "Film-Noir",
+            "Game-Show",
+            "History",
+            "Horror",
+            "Music",
+            "Musical",
+            "Mystery",
+            "News",
+            "Reality-TV",
+            "Romance",
+            "Sci-Fi",
+            "Sport",
+            "Talk-Show",
+            "Thriller",
+            "War",
+            "Western"
+        ]
+
         for i, genre in enumerate(genres):
             checkbox = QCheckBox(genre, self)
             self.genre_checkboxes.append(checkbox)
