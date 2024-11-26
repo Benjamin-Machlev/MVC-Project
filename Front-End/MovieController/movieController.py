@@ -19,6 +19,7 @@ class MovieController:
 
     def show_movie(self, movie):
         self.movieView.show_movie(movie)
+        self.check_image_safety(movie.image)  # Check image safety when showing the movie
 
     def show_update_movie_form(self, movie):
         self.movieView.show_update_movie_form(movie)
@@ -70,3 +71,7 @@ class MovieController:
         movie_data = self.movieModel.fetch_external_movie_data(movie_id)
         if movie_data:
             self.movieView.add_movie_form_widget.fill_form(movie_data)
+
+    def check_image_safety(self, image_url):
+        is_safe = self.movieModel.check_image_safety(image_url)
+        self.movieView.singel_movie_view.update_image_safety_label(is_safe)

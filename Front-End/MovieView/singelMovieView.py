@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit,
     QScrollArea, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import (Qt, Signal, QTimer)
+from PySide6.QtCore import (Qt, Signal, QTimer, QThread, QObject)
 import validators  # Add this import
 import requests  # Add this import
 
@@ -77,6 +77,9 @@ class SingleMovieView(QWidget):
             label.setStyleSheet("font-size: 16px;")
             label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             details_layout.addWidget(label, alignment=Qt.AlignTop | Qt.AlignLeft, stretch=1)
+        
+        self.image_safety_label = QLabel("Checking image safety...")  # Move this line here
+        details_layout.addWidget(self.image_safety_label, alignment=Qt.AlignTop | Qt.AlignLeft)  # Move this line here
         
         details_layout.addStretch()
         return details_layout
@@ -187,6 +190,14 @@ class SingleMovieView(QWidget):
         self.movie = movie
         self.update_ui()
         self.display_image(self.movie.image)  # Ensure the image is displayed
+        self.parent.controller.check_image_safety(self.movie.image)  # Check if the image is safe
+
+    def update_image_safety_label(self, is_safe):
+        if is_safe:
+            self.image_safety_label.setText("Suitable for all ages")
+        else:
+            self.image_safety_label.setText("Suitable for ages 18+")
+        self.image_safety_label.setStyleSheet("font-size: 16px; color: red;" if not is_safe else "font-size: 16px; color: green;")
 
     def display_image(self, image_path):
         if validators.url(image_path):

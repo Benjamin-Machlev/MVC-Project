@@ -177,6 +177,21 @@ class MovieModel:
                 movie.responses.remove(response)
                 self.send_update_request(movie_id, movie)  # Update the movie on the server
         else:
-            print(f"Model: Failed to delete response for movie ID: {movie_id}, status code: {response.status_code}")  # Debug print
+            print(f"Model: Failed to delete response for movie ID: {movie_id}, status code: {response.status_code}")
+
+    def check_image_safety(self, image_url):
+        try:
+            response = requests.get("http://localhost:5156/api/movies/check-adult-content", params={"imageUrl": image_url})
+            if response.status_code == 200:
+                response_data = response.json()
+                for item in response_data:
+                    if item["name"]["en"] == "safe" and item["confidence"] >= 80.0:
+                        return True
+                return False
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return False
 
 
