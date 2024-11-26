@@ -7,6 +7,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator, QPixmap
 from id_manager import load_current_id, save_current_id
 import validators  # Add this import
+import os  # Add this import
 
 class AddMovieForm(QWidget):
     add_movie_signal = Signal(dict)
@@ -137,8 +138,12 @@ class AddMovieForm(QWidget):
         
         if file_dialog.exec_():
             file_path = file_dialog.selectedFiles()[0]
-            self.image_path_label.setText(file_path)
-            self.display_image(file_path)
+            new_path = os.path.join("Front-End/movies img", f"{self.current_movie_id}.jpeg")
+            os.makedirs(os.path.dirname(new_path), exist_ok=True)
+            with open(file_path, 'rb') as fsrc, open(new_path, 'wb') as fdst:
+                fdst.write(fsrc.read())
+            self.image_path_label.setText(new_path)
+            self.display_image(new_path)
 
     def display_image(self, image_path):
         if validators.url(image_path):

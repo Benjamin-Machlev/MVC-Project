@@ -6,6 +6,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator, QPixmap
 import requests
 import validators  # Add this import
+import os  # Add this import
 
 class UpdateMovieForm(QWidget):
     update_movie_signal = Signal(dict)
@@ -152,7 +153,11 @@ class UpdateMovieForm(QWidget):
         
         if file_dialog.exec_():
             file_path = file_dialog.selectedFiles()[0]
-            self.image_path_label.setText(file_path)
+            new_path = os.path.join("Front-End/movies img", f"{self.movie_id_input.text()}.jpeg")
+            os.makedirs(os.path.dirname(new_path), exist_ok=True)
+            with open(file_path, 'rb') as fsrc, open(new_path, 'wb') as fdst:
+                fdst.write(fsrc.read())
+            self.image_path_label.setText(new_path)
 
     def setup_buttons(self):
         button_layout = QHBoxLayout()
