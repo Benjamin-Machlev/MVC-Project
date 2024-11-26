@@ -181,7 +181,13 @@ class MovieModel:
 
     def check_image_safety(self, image_url):
         try:
-            response = requests.get("http://localhost:5156/api/movies/check-adult-content", params={"imageUrl": image_url})
+            if image_url.startswith('http'):
+                response = requests.get("http://localhost:5156/api/movies/check-adult-content", params={"imageUrl": image_url})
+            else:
+                with open(image_url, 'rb') as image_file:
+                    files = {'file': image_file}
+                    response = requests.post("http://localhost:5156/api/movies/check-adult-content/uploadImage", files=files)
+            
             if response.status_code == 200:
                 response_data = response.json()
                 for item in response_data:
