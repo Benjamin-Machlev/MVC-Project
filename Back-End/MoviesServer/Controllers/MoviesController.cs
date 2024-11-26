@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 namespace MoviesServer.Controllers
 {
@@ -135,6 +136,28 @@ namespace MoviesServer.Controllers
                 var response = await httpClient.GetStringAsync($"https://yts.mx/api/v2/movie_details.json?movie_id={movieId}");
                 var description = JObject.Parse(response)["data"]["movie"]["description_full"].ToString();
                 return description;
+            }
+        }
+
+        // GET: api/movies/check-adult-content
+        [HttpGet("check-adult-content")]
+        public async Task<ActionResult<string>> CheckAdultContent(string imageUrl)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_b14875ac18496d1:6537633533a57803791192f03330adb7"));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+                try
+                {
+                    var response = await httpClient.GetStringAsync($"https://api.imagga.com/v2/categories/adult_content?image_url={imageUrl}");
+                    var result = JObject.Parse(response)["result"]["categories"].ToString();
+                    Console.WriteLine(result);
+                    return result;
+                }
+                catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return NotFound("The requested resource was not found.");
+                }
             }
         }
     }
