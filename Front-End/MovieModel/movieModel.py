@@ -73,7 +73,7 @@ class MovieModel:
             "image": updated_movie.image
         }
 
-        if updated_movie.image:
+        if updated_movie.image and not updated_movie.image.startswith('http'):
             self.save_image(updated_movie.image)
             # Update the image path in the movie data after saving the image
             movie_data["image"] = os.path.join("Front-End\\movies img\\", os.path.basename(updated_movie.image))
@@ -108,10 +108,21 @@ class MovieModel:
         if os.path.exists(destination_path):
             print(f"Image {image_name} already exists in {image_directory}")
         else:
-            with open(image_path, 'rb') as src_file:
-                with open(destination_path, 'wb') as dest_file:
-                    dest_file.write(src_file.read())
-            print(f"Image {image_name} saved to {image_directory}")
+            if image_path.startswith('http'):
+                # Download the image from the URL
+                response = requests.get(image_path)
+                if response.status_code == 200:
+                    with open(destination_path, 'wb') as dest_file:
+                        dest_file.write(response.content)
+                    print(f"Image {image_name} downloaded and saved to {image_directory}")
+                else:
+                    print(f"Failed to download image from {image_path}")
+            else:
+                # Copy the image from the local path
+                with open(image_path, 'rb') as src_file:
+                    with open(destination_path, 'wb') as dest_file:
+                        dest_file.write(src_file.read())
+                print(f"Image {image_name} saved to {image_directory}")
 
     def fetch_movie_from_server(self, movie_id):
         url = f"http://localhost:5156/api/movies/{movie_id}"
