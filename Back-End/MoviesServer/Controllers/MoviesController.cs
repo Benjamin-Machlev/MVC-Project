@@ -160,5 +160,36 @@ namespace MoviesServer.Controllers
                 }
             }
         }
+
+        // POST: api/movies/check-adult-content/uploadImage
+        [HttpPost("check-adult-content/uploadImage")]
+        public async Task<ActionResult<string>> CheckAdultContent(IFormFile imageFile)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_b14875ac18496d1:6537633533a57803791192f03330adb7"));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+
+                using (var content = new MultipartFormDataContent())
+                {
+                    var streamContent = new StreamContent(imageFile.OpenReadStream());
+                    streamContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
+                    content.Add(streamContent, "image", imageFile.FileName);
+
+                    try
+                    {
+                        var response = await httpClient.PostAsync("https://api.imagga.com/v2/categories/adult_content", content);
+                        response.EnsureSuccessStatusCode();
+                        var result = await response.Content.ReadAsStringAsync();
+                        var categories = JObject.Parse(result)["result"]["categories"].ToString();
+                        return categories;
+                    }
+                    catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        return NotFound("The requested resource was not found.");
+                    }
+                }
+            }
+        }
     }
 }
