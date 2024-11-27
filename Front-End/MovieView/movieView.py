@@ -30,7 +30,7 @@ class MovieView(QMainWindow):
         super().__init__()
         self.controller = controller
         self.movies = movies
-        self.setWindowTitle('YTS.mx Like UI')
+        self.setWindowTitle('Popcorn Hub')
         self.setGeometry(400, 100, 800, 600)
 
         # Set the window icon
@@ -40,7 +40,7 @@ class MovieView(QMainWindow):
         # Set the taskbar icon
         if sys.platform == 'win32':
             import ctypes
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u'YTS.mx')
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u'Popcorn Hub')
 
         self.central_widget = QWidget()
         self.main_layout = QVBoxLayout(self.central_widget)
@@ -140,7 +140,7 @@ class MovieView(QMainWindow):
         icon_label.setPixmap(QPixmap(r"Front-End\movies img\theaters.svg").scaled(24, 24, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         self.top_bar_layout.addWidget(icon_label)
 
-        site_title = QLabel("YTS.mx")
+        site_title = QLabel("Popcorn Hub")
         self.top_bar_layout.addWidget(site_title)
 
         self.top_bar_layout.addStretch(1)
@@ -213,7 +213,7 @@ class MovieView(QMainWindow):
         image_button.setIconSize(QSize(200, 315))
         image_button.setFixedSize(QSize(200, 315))
         image_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        
+        image_button.setStyleSheet("border: none;")
         image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))
 
         title_label = QLabel(f"<b>{movie.title}</b><br>({movie.release_year})")
@@ -233,7 +233,7 @@ class MovieView(QMainWindow):
         footer_widget = QWidget()
         
         footer_layout = QHBoxLayout(footer_widget)
-        footer_label = QLabel("© 2024 YTS.mx Example")
+        footer_label = QLabel("© 2024 Popcorn Hub, The Best Movie Site - All Rights Reserved")
         footer_layout.addWidget(footer_label)
 
         self.main_layout.addWidget(footer_widget)
