@@ -19,7 +19,7 @@ class MovieController:
 
     def show_movie(self, movie):
         self.movieView.show_movie(movie)
-        self.check_image_safety(movie.image)  # Check image safety when showing the movie
+        # Removed the call to check_image_safety here
 
     def show_update_movie_form(self, movie):
         self.movieView.show_update_movie_form(movie)
