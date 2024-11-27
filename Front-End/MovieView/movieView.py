@@ -153,7 +153,7 @@ class MovieView(QMainWindow):
         self.search_input.setStyleSheet("color: white;")  # Add negative top margin to move it up
 
         self.no_results_label = QLabel("", self)
-        self.no_results_label.setStyleSheet("color: red; font-size: 16px; font-weight: bold;")
+        self.no_results_label.setStyleSheet("color: red; font-size: 16px; font-weight: bold;padding-top: 18px;")  # Add padding to the top
         self.no_results_label.setAlignment(Qt.AlignCenter)
         self.no_results_label.setFixedSize(300, 30)  # Set a fixed size
         self.no_results_label.setVisible(False)  # Set visibility instead of hiding
