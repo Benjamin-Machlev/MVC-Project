@@ -158,9 +158,12 @@ class MovieView(QMainWindow):
         self.no_results_label.setFixedSize(300, 30)  # Set a fixed size
         self.no_results_label.setVisible(False)  # Set visibility instead of hiding
 
-        self.search_button = QPushButton("Search")
+        self.search_button = QPushButton()
         self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.search_button.setFixedSize(300, 30)
+        self.search_button.setFixedSize(30, 30)
+        search_icon = QIcon(r"Front-End\movies img\search.svg")
+        self.search_button.setIcon(search_icon)
+        self.search_button.setIconSize(QSize(24, 24))
 
         search_layout = QVBoxLayout()
         search_input_layout = QHBoxLayout()
