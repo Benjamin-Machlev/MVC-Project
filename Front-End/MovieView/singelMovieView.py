@@ -78,9 +78,13 @@ class SingleMovieView(QWidget):
             label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             details_layout.addWidget(label, alignment=Qt.AlignTop | Qt.AlignLeft, stretch=1)
         
-        self.image_safety_label = QLabel("Checking image safety...")  # Move this line here
-        details_layout.addWidget(self.image_safety_label, alignment=Qt.AlignTop | Qt.AlignLeft)  # Move this line here
-        
+        self.image_safety_label = QLabel("")
+        details_layout.addWidget(self.image_safety_label, alignment=Qt.AlignTop | Qt.AlignLeft)
+
+        self.check_image_safety_button = QPushButton("Check Image Safety")
+        self.check_image_safety_button.clicked.connect(self.check_image_safety)
+        details_layout.addWidget(self.check_image_safety_button, alignment=Qt.AlignTop | Qt.AlignLeft)
+
         details_layout.addStretch()
         return details_layout
 
@@ -203,7 +207,7 @@ class SingleMovieView(QWidget):
         self.movie = movie
         self.update_ui()
         self.display_image(self.movie.image)  # Ensure the image is displayed
-        self.parent.controller.check_image_safety(self.movie.image)  # Check if the image is safe
+        self.image_safety_label.setText("")  # Clear the image safety label
 
     def update_image_safety_label(self, is_safe):
         if is_safe:
@@ -279,3 +283,6 @@ class SingleMovieView(QWidget):
     def show_movie(self, movie):
         self.set_movie(movie)
         self.show()
+
+    def check_image_safety(self):
+        self.parent.controller.check_image_safety(self.movie.image)
