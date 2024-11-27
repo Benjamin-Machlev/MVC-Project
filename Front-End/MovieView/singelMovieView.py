@@ -25,7 +25,7 @@ class SingleMovieView(QWidget):
 
     def init_ui(self):
         main_layout = QHBoxLayout(self)
-        main_layout.setContentsMargins(150, 0, 150, 0)
+        main_layout.setContentsMargins(80, 50, 80, 50)  # Adjust margins to fit more content
 
         details_layout = self.create_details_layout()
         main_layout.addLayout(details_layout, stretch=1)
@@ -41,13 +41,15 @@ class SingleMovieView(QWidget):
 
         self.setLayout(main_layout)
         self.setWindowTitle("Movie Details")
-        self.setGeometry(QApplication.primaryScreen().availableGeometry())
+        self.setGeometry(QApplication.primaryScreen().availableGeometry().adjusted(0, 0, -50, -50))  # Adjust window size
+        self.setMinimumSize(800, 600)  # Adjust minimum size
 
         if self.movie:
             self.update_ui()
 
     def create_details_layout(self):
         details_layout = QVBoxLayout()
+        details_layout.setSpacing(0)  # Reduce spacing between lines
 
         self.movie_image = QLabel(self)
         if self.movie and self.movie.image:
@@ -109,13 +111,11 @@ class SingleMovieView(QWidget):
         responses_widget = QWidget()
         responses_widget.setLayout(self.responses_list)
         scroll_area.setWidget(responses_widget)
-        scroll_area.setFixedSize(800, 300)
         responses_layout.addWidget(scroll_area)
 
         add_response_layout = QVBoxLayout()
         input_layout = QHBoxLayout()
         self.new_response_input = QTextEdit()
-        self.new_response_input.setFixedSize(300, 60)
         self.new_response_input.setPlaceholderText("Enter your response...")
         add_response_button = QPushButton("Add response")
         add_response_button.setFixedSize(200, 30)
