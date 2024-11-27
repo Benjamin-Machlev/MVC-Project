@@ -131,9 +131,9 @@ class MovieView(QMainWindow):
 
     def create_top_bar(self):
         self.top_bar_widget = QWidget(self)
-        self.top_bar_widget.setFixedHeight(100)  # Set a fixed height for the top bar
+        self.top_bar_widget.setFixedHeight(120)  # Increase the height of the top bar
         self.top_bar_layout = QHBoxLayout(self.top_bar_widget)
-        self.top_bar_layout.setContentsMargins(20, 20, 20, 20)
+        self.top_bar_layout.setContentsMargins(80, 0, 80, 0)  # Increase margins to the left and right
         self.top_bar_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         # Add the icon to the top bar
@@ -142,28 +142,30 @@ class MovieView(QMainWindow):
         self.top_bar_layout.addWidget(icon_label)
 
         site_title = QLabel("Popcorn Hub")
-        site_title.setStyleSheet("font-size: 24px; font-weight: bold; color: white;")
-        self.top_bar_layout.addWidget(site_title)
+        site_title.setStyleSheet("font-size: 28px; font-weight: bold; color: white; height: 30px;")  # Set height to 30px
+        self.top_bar_layout.addWidget(site_title, alignment=Qt.AlignLeft)  # Align the title to the left
 
         self.top_bar_layout.addStretch(1)
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search movies...")
-        self.search_input.setFixedSize(300, 30)
-        self.search_input.setStyleSheet("color: white;")
+        self.search_input.setFixedSize(300, 40)  # Increase height to 50px
+        self.search_input.setStyleSheet("color: white;")  # Add negative top margin to move it up
 
         self.no_results_label = QLabel("", self)
-        self.no_results_label.setStyleSheet("color: red; font-size: 16px;")
+        self.no_results_label.setStyleSheet("color: red; font-size: 16px; font-weight: bold;")
         self.no_results_label.setAlignment(Qt.AlignCenter)
         self.no_results_label.setFixedSize(300, 30)  # Set a fixed size
         self.no_results_label.setVisible(False)  # Set visibility instead of hiding
+        self.no_results_label.setFixedHeight(30)  # Set height to 30px
 
         self.search_button = QPushButton()
         self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.search_button.setFixedSize(30, 30)
+        self.search_button.setFixedSize(50, 40)  # Increase height to match the search input
         search_icon = QIcon(r"Front-End\movies img\search.svg")
         self.search_button.setIcon(search_icon)
         self.search_button.setIconSize(QSize(24, 24))
+        self.search_button.setFixedHeight(30)  # Set height to 30px
 
         search_layout = QVBoxLayout()
         search_input_layout = QHBoxLayout()
@@ -182,9 +184,13 @@ class MovieView(QMainWindow):
         self.top_bar_layout.addStretch(1)  # Add stretch after the search container
 
         self.top_bar_layout.addStretch(1)
-        self.add_button = QPushButton("Add")
+        self.add_button = QPushButton()
         self.add_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.top_bar_layout.addWidget(self.add_button)
+        self.add_button.setFixedHeight(30)  # Set the height to match the search input
+        add_icon = QIcon(r"Front-End\movies img\add.svg")
+        self.add_button.setIcon(add_icon)
+        self.add_button.setIconSize(QSize(24, 24))
+        self.top_bar_layout.addWidget(self.add_button, alignment=Qt.AlignRight)  # Align the add button to the right
         self.add_button.clicked.connect(self.show_add_movie_form)
 
     def create_movie_list(self, movies):
@@ -273,6 +279,7 @@ class MovieView(QMainWindow):
 
     def search_movie(self):
         search_text = self.search_input.text().strip().lower()
+        self.search_input.clear()  # Clear the search input after searching
         if not search_text:
             self.show_movie_list()
             return
@@ -284,7 +291,7 @@ class MovieView(QMainWindow):
             self.show_no_results()
 
     def show_no_results(self):
-        self.no_results_label.setText("No results found.")
+        self.no_results_label.setText("No results found")
         self.no_results_label.setVisible(True)  # Use setVisible instead of show
         QTimer.singleShot(5000, lambda: self.no_results_label.setVisible(False))  # Use setVisible instead of hide
 
