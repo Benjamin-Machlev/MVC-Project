@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit,
     QScrollArea, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import (Qt, Signal, QTimer, QThread, QObject)
+from PySide6.QtCore import (Qt, Signal, QTimer, QThread, QObject, QEvent)
 import validators  # Add this import
 import requests  # Add this import
 
@@ -144,16 +144,17 @@ class SingleMovieView(QWidget):
                 margin: 5px;
             }
             QPushButton:hover {
-                background-color: #e0e0e0;
+                background-color: #686868;
             }
         """
         
         update_button = QPushButton("Update Movie Info")
         update_button.setFixedSize(200, 80)
-        update_button.setIcon(QIcon(r"Front-End\movies img/update.svg"))
-        update_button.setLayoutDirection(Qt.RightToLeft)
         update_button.setStyleSheet(button_style)
         update_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        update_button.setIcon(QIcon())  # Initially, no icon
+        update_button.setLayoutDirection(Qt.RightToLeft)
+        update_button.installEventFilter(self)  # Install event filter for hover detection
         update_button.clicked.connect(self.show_update_movie_form)
 
         delete_button = QPushButton("Delete Movie")
@@ -178,6 +179,18 @@ class SingleMovieView(QWidget):
         
         actions_group.setLayout(actions_layout)
         return actions_group
+
+    def eventFilter(self, obj, event):
+        if isinstance(obj, QPushButton):
+            if event.type() == QEvent.Enter:
+                if obj.text() == "Update Movie Info":
+                    obj.setText("")
+                    obj.setIcon(QIcon(r"Front-End\movies img/update.svg"))
+            elif event.type() == QEvent.Leave:
+                if obj.text() == "":
+                    obj.setIcon(QIcon())
+                    obj.setText("Update Movie Info")
+        return super().eventFilter(obj, event)
 
     def show_update_movie_form(self):
         self.show_update_movie_form_signal.emit(self.movie)
