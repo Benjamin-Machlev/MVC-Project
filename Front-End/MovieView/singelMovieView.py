@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit,
     QScrollArea, QSizePolicy, QGroupBox, QApplication)
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import (Qt, Signal, QTimer, QThread, QObject, QEvent)
+from PySide6.QtCore import (Qt, Signal, QTimer, QThread, QObject, QEvent, QSize)
 import validators  # Add this import
 import requests  # Add this import
 
@@ -158,23 +158,28 @@ class SingleMovieView(QWidget):
         update_button.setCursor(Qt.CursorShape.PointingHandCursor)
         update_button.setIcon(QIcon())  # Initially, no icon
         update_button.setLayoutDirection(Qt.RightToLeft)
+        update_button.setObjectName("update_btn")  # Initially, no icon
         update_button.installEventFilter(self)  # Install event filter for hover detection
         update_button.clicked.connect(self.show_update_movie_form)
 
         delete_button = QPushButton("Delete Movie")
         delete_button.setFixedSize(200, 80)
-        delete_button.setIcon(QIcon(r"Front-End\movies img/delete.svg"))
-        delete_button.setLayoutDirection(Qt.RightToLeft)
         delete_button.setStyleSheet(button_style)
         delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        delete_button.setIcon(QIcon())
+        delete_button.setLayoutDirection(Qt.RightToLeft)
+        delete_button.setObjectName("del_btn")  # Initially, no icon
+        delete_button.installEventFilter(self)  # Install event filter for hover detection
         delete_button.clicked.connect(self.delete_movie)
         
         back_button = QPushButton("Back to Movie List")
         back_button.setFixedSize(200, 80)
-        back_button.setIcon(QIcon(r"Front-End\movies img/menu.svg"))
-        back_button.setLayoutDirection(Qt.RightToLeft)
         back_button.setStyleSheet(button_style)
         back_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        back_button.setIcon(QIcon())
+        back_button.setLayoutDirection(Qt.RightToLeft)
+        back_button.setObjectName("back_btn")  # Initially, no icon
+        back_button.installEventFilter(self)  # Install event filter for hover detection
         back_button.clicked.connect(self.back_to_movie_list)
         
         actions_layout.addWidget(update_button)
@@ -187,13 +192,34 @@ class SingleMovieView(QWidget):
     def eventFilter(self, obj, event):
         if isinstance(obj, QPushButton):
             if event.type() == QEvent.Enter:
-                if obj.text() == "Update Movie Info":
+                if obj.objectName() == "update_btn":
                     obj.setText("")
-                    obj.setIcon(QIcon(r"Front-End\movies img/update.svg"))
+                    obj.setIcon(QIcon(r"Front-End\movies img/edit.svg"))
+                    obj.setIconSize(QSize(36, 36))
+                    
+                elif obj.objectName() == "del_btn":
+                    obj.setText("")
+                    obj.setIcon(QIcon(r"Front-End\movies img/delete.svg"))
+                    obj.setIconSize(QSize(36, 36))
+                    
+                elif obj.objectName() == "back_btn":
+                    obj.setText("")
+                    obj.setIcon(QIcon(r"Front-End\movies img/menu.svg"))
+                    obj.setIconSize(QSize(36, 36))
+                    
             elif event.type() == QEvent.Leave:
-                if obj.text() == "":
+                if obj.objectName() == "update_btn":
                     obj.setIcon(QIcon())
                     obj.setText("Update Movie Info")
+                    
+                elif obj.objectName() == "del_btn":
+                    obj.setIcon(QIcon())
+                    obj.setText("Delete Movie")
+                    
+                elif obj.objectName() == "back_btn":
+                    obj.setIcon(QIcon())
+                    obj.setText("Back to Movie List")
+                    
         return super().eventFilter(obj, event)
 
     def show_update_movie_form(self):
