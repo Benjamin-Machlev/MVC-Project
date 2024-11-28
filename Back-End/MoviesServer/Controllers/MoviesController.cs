@@ -145,7 +145,7 @@ namespace MoviesServer.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_b14875ac18496d1:6537633533a57803791192f03330adb7"));
+                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_2b2eae2514257e9:ffb00ecbf7f5e3e14d7cd1339a09d2f7"));
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
                 try
                 {
@@ -167,7 +167,7 @@ namespace MoviesServer.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_b14875ac18496d1:6537633533a57803791192f03330adb7"));
+                var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("acc_2b2eae2514257e9:ffb00ecbf7f5e3e14d7cd1339a09d2f7"));
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
 
                 using (var content = new MultipartFormDataContent())

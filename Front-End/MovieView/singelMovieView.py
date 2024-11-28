@@ -83,9 +83,10 @@ class SingleMovieView(QWidget):
         self.image_safety_label = QLabel("")
         details_layout.addWidget(self.image_safety_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 
-        self.check_image_safety_button = QPushButton("Check Image Safety")
-        self.check_image_safety_button.clicked.connect(self.check_image_safety)
-        details_layout.addWidget(self.check_image_safety_button, alignment=Qt.AlignTop | Qt.AlignLeft)
+        # Remove the duplicate "Check Image Safety" button
+        # self.check_image_safety_button = QPushButton("Check Image Safety")
+        # self.check_image_safety_button.clicked.connect(self.check_image_safety)
+        # details_layout.addWidget(self.check_image_safety_button, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         details_layout.addStretch()
         return details_layout
@@ -95,15 +96,24 @@ class SingleMovieView(QWidget):
 
         description_group = QGroupBox("Description")
         description_layout = QVBoxLayout()
+        
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        description_widget = QWidget()
+        description_widget.setLayout(description_layout)
+        scroll_area.setWidget(description_widget)
+        
         self.description_text = QLabel()
         self.description_text.setWordWrap(True)
         self.description_text.setStyleSheet("font-size: 16px;")
         description_layout.addWidget(self.description_text)
-        description_group.setLayout(description_layout)
+        
+        description_group.setLayout(QVBoxLayout())
+        description_group.layout().addWidget(scroll_area)
         layout.addWidget(description_group)
 
         responses_group = QGroupBox("Responses")
-        responses_layout = QVBoxLayout()
+        responses_layout = QHBoxLayout()  # Change to QHBoxLayout to split input and list
 
         self.responses_list = QVBoxLayout()
         scroll_area = QScrollArea()
@@ -111,24 +121,24 @@ class SingleMovieView(QWidget):
         responses_widget = QWidget()
         responses_widget.setLayout(self.responses_list)
         scroll_area.setWidget(responses_widget)
-        responses_layout.addWidget(scroll_area)
+        responses_layout.addWidget(scroll_area, stretch=2)  # Add stretch to balance the layout
 
         add_response_layout = QVBoxLayout()
-        input_layout = QHBoxLayout()
+        input_layout = QVBoxLayout()  # Change to QVBoxLayout to stack input and button vertically
         self.new_response_input = QTextEdit()
         self.new_response_input.setPlaceholderText("Enter your response...")
         add_response_button = QPushButton("Add response")
         add_response_button.setFixedSize(200, 30)
         add_response_button.clicked.connect(self.add_response)
-        input_layout.addWidget(self.new_response_input, alignment=Qt.AlignLeft)
-        input_layout.addWidget(add_response_button, alignment=Qt.AlignLeft)
+        input_layout.addWidget(self.new_response_input)
+        input_layout.addWidget(add_response_button)
         add_response_layout.addLayout(input_layout)
 
         self.response_message_label = QLabel("")
         self.response_message_label.setStyleSheet("color: red;")
-        add_response_layout.addWidget(self.response_message_label, alignment=Qt.AlignLeft)
+        add_response_layout.addWidget(self.response_message_label)
 
-        responses_layout.addLayout(add_response_layout)
+        responses_layout.addLayout(add_response_layout, stretch=1)  # Add stretch to balance the layout
 
         responses_group.setLayout(responses_layout)
         layout.addWidget(responses_group)
@@ -182,9 +192,16 @@ class SingleMovieView(QWidget):
         back_button.installEventFilter(self)  # Install event filter for hover detection
         back_button.clicked.connect(self.back_to_movie_list)
         
+        check_image_safety_button = QPushButton("Check Image Safety")
+        check_image_safety_button.setFixedSize(200, 80)
+        check_image_safety_button.setStyleSheet(button_style)
+        check_image_safety_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        check_image_safety_button.clicked.connect(self.check_image_safety)
+        
         actions_layout.addWidget(update_button)
         actions_layout.addWidget(delete_button)
         actions_layout.addWidget(back_button)
+        actions_layout.addWidget(check_image_safety_button)  # Add the button to the actions layout
         
         actions_group.setLayout(actions_layout)
         return actions_group
@@ -252,7 +269,12 @@ class SingleMovieView(QWidget):
 
     def update_ui(self):
         if self.movie:
-            self.title_label.setText(self.movie.title)
+            title_words = self.movie.title.split()
+            if len(title_words) > 5:
+                wrapped_title = ' '.join(title_words[:5]) + '\n' + ' '.join(title_words[5:])
+                self.title_label.setText(wrapped_title)
+            else:
+                self.title_label.setText(self.movie.title)
             self.year_label.setText(str(self.movie.release_year))
             self.details_labels["movie_id"].setText(f"Movie ID: {self.movie.movieID}")
             self.details_labels["genre"].setText(f"Genre: {self.movie.genre}")
@@ -303,12 +325,12 @@ class SingleMovieView(QWidget):
             self.delete_response_signal.emit(self.movie, response)
             self.update_responses_list()
 
+    def check_image_safety(self):
+        self.parent.controller.check_image_safety(self.movie.image)
+
     def back_to_movie_list(self):
         self.back_to_movie_list_signal.emit()
 
     def show_movie(self, movie):
         self.set_movie(movie)
         self.show()
-
-    def check_image_safety(self):
-        self.parent.controller.check_image_safety(self.movie.image)
