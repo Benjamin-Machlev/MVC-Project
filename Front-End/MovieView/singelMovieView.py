@@ -196,6 +196,10 @@ class SingleMovieView(QWidget):
         check_image_safety_button.setFixedSize(200, 80)
         check_image_safety_button.setStyleSheet(button_style)
         check_image_safety_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        check_image_safety_button.setIcon(QIcon())
+        check_image_safety_button.setLayoutDirection(Qt.RightToLeft)
+        check_image_safety_button.setObjectName("check_btn")  # Initially, no icon
+        check_image_safety_button.installEventFilter(self)  # Install event filter for hover detection
         check_image_safety_button.clicked.connect(self.check_image_safety)
         
         actions_layout.addWidget(update_button)
@@ -209,6 +213,7 @@ class SingleMovieView(QWidget):
     def eventFilter(self, obj, event):
         if isinstance(obj, QPushButton):
             if event.type() == QEvent.Enter:
+                
                 if obj.objectName() == "update_btn":
                     obj.setText("")
                     obj.setIcon(QIcon(r"Front-End\movies img/edit.svg"))
@@ -224,6 +229,11 @@ class SingleMovieView(QWidget):
                     obj.setIcon(QIcon(r"Front-End\movies img/menu.svg"))
                     obj.setIconSize(QSize(36, 36))
                     
+                elif obj.objectName() == "check_btn":
+                    obj.setText("")
+                    obj.setIcon(QIcon(r"Front-End\movies img/adult_content.svg"))
+                    obj.setIconSize(QSize(36, 36))
+                    
             elif event.type() == QEvent.Leave:
                 if obj.objectName() == "update_btn":
                     obj.setIcon(QIcon())
@@ -236,6 +246,10 @@ class SingleMovieView(QWidget):
                 elif obj.objectName() == "back_btn":
                     obj.setIcon(QIcon())
                     obj.setText("Back to Movie List")
+                
+                elif obj.objectName() == "check_btn":
+                    obj.setIcon(QIcon())
+                    obj.setText("Check Image Safety")
                     
         return super().eventFilter(obj, event)
 
