@@ -261,7 +261,9 @@ class MovieView(QMainWindow):
         movie = next((m for m in self.movies if m.movieID == movie_id), None)
         if isinstance(obj, QPushButton):
             if event.type() == QEvent.Enter:
-                obj.setText(f"RATING:\n{movie.rating}/10\n\nGENRE:\n{movie.genre.replace(',', '\n')}")
+                genres = movie.genre.split(',')
+                displayed_genres = ', '.join(genres[:3])  # Limit to 3 genres
+                obj.setText(f"RATING:\n{movie.rating}/10\n\nGENRE:\n{displayed_genres.replace(',', '\n')}")
                 obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128); font-size: 16px;")
                 obj.setCursor(Qt.CursorShape.PointingHandCursor)
                 obj.setIcon(QIcon())  # Clear the icon
