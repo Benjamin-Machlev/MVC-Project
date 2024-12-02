@@ -233,11 +233,12 @@ class MovieView(QMainWindow):
             image.loadFromData(requests.get(movie.image).content)
         else:
             image = QPixmap(movie.image)
-        image_button.setIcon(image)
-        image_button.setIconSize(QSize(200, 315))
-        image_button.setFixedSize(QSize(200, 315))
+        image = image.scaled(210, 315, Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation)  # Scale the image to fill the button
+        image_button.setIcon(QIcon(image))
+        image_button.setIconSize(QSize(210, 315))
+        image_button.setFixedSize(QSize(220, 325))
         image_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        image_button.setStyleSheet("border: none;")
+        #image_button.setStyleSheet("border: none; padding: 0;")  # Remove padding and borders
         image_button.setObjectName(str(movie.movieID))
         image_button.installEventFilter(self)
         image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))
@@ -268,13 +269,13 @@ class MovieView(QMainWindow):
                 
             elif event.type() == QEvent.Leave:
                 obj.setText("")
-                obj.setStyleSheet("border: none;")
                 obj.setCursor(Qt.CursorShape.ArrowCursor)
                 if validators.url(movie.image):
                     image = QPixmap()
                     image.loadFromData(requests.get(movie.image).content)
                 else:
                     image = QPixmap(movie.image)
+                image = image.scaled(210, 315, Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation)  # Scale the image back
                 obj.setIcon(QIcon(image))  # Reset the icon
                 return True  # Return True to indicate the event was handled
         return False  # Return False if the event was not handled
