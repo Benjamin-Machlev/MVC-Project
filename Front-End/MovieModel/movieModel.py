@@ -138,7 +138,7 @@ class MovieModel:
             return None
 
     def fetch_external_movie_data(self, movie_id):
-        url = f"http://localhost:5156/api/movies/external/{movie_id}"
+        url = f"http://localhost:5156/api/yts/external/{movie_id}"
         try:
             response = requests.get(url)
             if response.status_code == 200:
@@ -182,11 +182,11 @@ class MovieModel:
     def check_image_safety(self, image_url):
         try:
             if image_url.startswith('http'):
-                response = requests.get("http://localhost:5156/api/movies/check-adult-content", params={"imageUrl": image_url})
+                response = requests.get("http://localhost:5156/api/imagga/check-adult-content", params={"imageUrl": image_url})
             else:
                 with open(image_url, 'rb') as image_file:
                     files = {'file': image_file}
-                    response = requests.post("http://localhost:5156/api/movies/check-adult-content/uploadImage", files=files)
+                    response = requests.post("http://localhost:5156/api/imagga/check-adult-content/uploadImage", files=files)
             
             if response.status_code == 200:
                 response_data = response.json()
