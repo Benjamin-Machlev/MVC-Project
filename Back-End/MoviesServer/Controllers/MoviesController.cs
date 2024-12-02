@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using MoviesServer.DataAccess;
+using MoviesServer.CQRS.Queries;
+using MoviesServer.CQRS.Commands;
 
 namespace MoviesServer.Controllers
 {
@@ -15,17 +17,29 @@ namespace MoviesServer.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly MoviesContext _context;
+        private readonly GetAllMoviesQuery _getAllMoviesQuery;
+        private readonly GetMovieByIdQuery _getMovieByIdQuery;
+        private readonly CreateMovieCommand _createMovieCommand;
+        private readonly UpdateMovieCommand _updateMovieCommand;
+        private readonly DeleteMovieCommand _deleteMovieCommand;
 
-        public MoviesController(MoviesContext context)
+        public MoviesController(MoviesContext context, GetAllMoviesQuery getAllMoviesQuery, 
+                GetMovieByIdQuery getMovieByIdQuery, CreateMovieCommand createMovieCommand,
+                UpdateMovieCommand updateMovieCommand, DeleteMovieCommand deleteMovieCommand)
         {
             _context = context;
+            _getAllMoviesQuery = getAllMoviesQuery;
+            _getMovieByIdQuery = getMovieByIdQuery;
+            _createMovieCommand = createMovieCommand;
+            _updateMovieCommand = updateMovieCommand;
+            _deleteMovieCommand = deleteMovieCommand;
         }
 
         // GET: api/movies
         [HttpGet]
         public ActionResult<List<Movie>> GetAllMovies()
         {
-            var movies = _context.Movies.ToList();
+            var movies = _getAllMoviesQuery.GetAllMovies();
             return movies;
         }
 
@@ -33,7 +47,7 @@ namespace MoviesServer.Controllers
         [HttpGet("{id}")]
         public ActionResult<Movie> GetMovie(int id)
         {
-            var movie = _context.Movies.Find(id);
+            var movie = _getMovieByIdQuery.GetMovieById(id);
             if (movie == null)
             {
                 return NotFound();
@@ -45,8 +59,7 @@ namespace MoviesServer.Controllers
         [HttpPost]
         public ActionResult<Movie> AddMovie(Movie movie)
         {
-            _context.Movies.Add(movie);
-            _context.SaveChanges();
+            _createMovieCommand.AddMovie(movie);
             return CreatedAtAction(nameof(GetMovie), new { id = movie.MovieID }, movie);
         }
 
@@ -54,14 +67,7 @@ namespace MoviesServer.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateMovie(int id, Movie movie)
         {
-            if (id != movie.MovieID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(movie).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
-
+            _updateMovieCommand.UpdateMovie(id, movie);
             return NoContent();
         }
 
@@ -69,18 +75,8 @@ namespace MoviesServer.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteMovie(int id)
         {
-            var movie = _context.Movies.Find(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            _context.Movies.Remove(movie);
-            _context.SaveChanges();
-
+            _deleteMovieCommand.DeleteMovie(id);
             return NoContent();
         }
-
-        
     }
 }
