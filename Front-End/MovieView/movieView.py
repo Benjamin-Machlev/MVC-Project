@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QScrollArea
 )
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtCore import Qt, QSize, QTimer
+from PySide6.QtCore import Qt, QSize, QTimer, QEvent
 from MovieView.singelMovieView import SingleMovieView
 from MovieView.addMovieView import AddMovieForm 
 from Entity.movie import Movie
@@ -238,6 +238,8 @@ class MovieView(QMainWindow):
         image_button.setFixedSize(QSize(200, 315))
         image_button.setCursor(Qt.CursorShape.PointingHandCursor)
         image_button.setStyleSheet("border: none;")
+        image_button.setObjectName(str(movie.movieID))
+        image_button.installEventFilter(self)
         image_button.clicked.connect(lambda _, m=movie: self.show_movie(m))
 
         title_label = QLabel(f"<b>{movie.title}</b><br>({movie.release_year})")
@@ -253,6 +255,22 @@ class MovieView(QMainWindow):
         
         return frame_widget
 
+    def eventFilter(self, obj, event):
+        movie_id = int(obj.objectName())
+        movie = next((m for m in self.movies if m.movieID == movie_id), None)
+        if isinstance(obj, QPushButton):
+            if event.type() == QEvent.Enter:
+                obj.setText(f"RATING: {movie.rating}/10\nGENRE: {movie.genre}")
+                obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128);")
+                
+            elif event.type() == QEvent.Leave:
+                obj.setText("")
+                obj.setStyleSheet("border: none;")
+    
+    
+    
+
+    
     def create_footer(self):
         footer_widget = QWidget()
         
