@@ -264,12 +264,13 @@ class MovieView(QMainWindow):
                 genres = movie.genre.split(',')
                 displayed_genres = ', '.join(genres[:3])  # Limit to 3 genres
                 obj.setText(f"RATING:\n{movie.rating}/10\n\nGENRE:\n{displayed_genres.replace(',', '\n')}")
-                obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128); font-size: 16px;")
+                obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128); font-size: 16px; border: 2px solid rgb(52, 235, 131);")
                 obj.setCursor(Qt.CursorShape.PointingHandCursor)
                 obj.setIcon(QIcon())  # Clear the icon
                 return True  # Return True to indicate the event was handled
                 
             elif event.type() == QEvent.Leave:
+                obj.setStyleSheet("")  # Reset the style
                 obj.setText("")
                 obj.setCursor(Qt.CursorShape.ArrowCursor)
                 if validators.url(movie.image):
