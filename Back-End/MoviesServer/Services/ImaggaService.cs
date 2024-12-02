@@ -28,7 +28,7 @@ namespace MoviesServer.Services
             }
             catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                throw new Exception("The requested resource was not found.", e);
+                throw new Exception("Imagga Service - The requested resource was not found.", e);
             }
         }
 
@@ -50,7 +50,7 @@ namespace MoviesServer.Services
                 }
                 catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    throw new Exception("The requested resource was not found.", e);
+                    throw new Exception("Imagga Service - The requested resource was not found.", e);
                 }
             }
         }

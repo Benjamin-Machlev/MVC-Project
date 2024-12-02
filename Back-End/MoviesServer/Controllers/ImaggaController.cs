@@ -35,11 +35,11 @@ namespace MoviesServer.Controllers
             {
                 if (ex.InnerException is HttpRequestException httpEx && httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    return NotFound("The requested resource was not found.");
+                    return NotFound("Imagga Controller - The requested resource was not found.");
                 }
 
                 // Log exception here if necessary
-                return StatusCode(500, "An error occurred while processing your request.");
+                return StatusCode(500, "Imagga Controller - An error occurred while processing your request.");
             }
         }
 
