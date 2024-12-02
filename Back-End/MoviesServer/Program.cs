@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MoviesServer.CQRS.Queries;
 using MoviesServer.DataAccess;
 using MoviesServer.Services;  // Ensure this namespace includes YtsService and ImaggaService
 using System;
@@ -14,9 +15,13 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "Movies API", Version = "v1" });
 });
 
+
 // Configure the DbContext
 builder.Services.AddDbContext<MoviesContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesDatabase")));
+
+// Register the services with the DI container
+builder.Services.AddScoped<GetAllMoviesQuery>();
 
 // Register services with HttpClient
 builder.Services.AddHttpClient<YtsService>(client =>
