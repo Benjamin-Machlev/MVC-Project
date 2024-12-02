@@ -1,7 +1,6 @@
 ﻿using MoviesServer.DataAccess;
 using MoviesServer.Models;
 
-
 namespace MoviesServer.CQRS.Queries
 {
     public class GetAllMoviesQuery
@@ -14,7 +13,14 @@ namespace MoviesServer.CQRS.Queries
 
         public List<Movie> GetAllMovies()
         {
-            return _context.Movies.ToList();
+            try
+            {
+                return _context.Movies.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving all movies: {ex.Message}");
+            }
         }
     }
 }

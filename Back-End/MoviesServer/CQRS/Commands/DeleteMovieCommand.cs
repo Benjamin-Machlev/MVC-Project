@@ -14,13 +14,20 @@ namespace MoviesServer.CQRS.Commands
 
         public void DeleteMovie(int id)
         {
-            var movie = _context.Movies.Find(id);
-            if (movie == null)
+            try
             {
-                throw new System.Exception("Invalid movie ID");
+                var movie = _context.Movies.Find(id);
+                if (movie == null)
+                {
+                    throw new System.Exception("Invalid movie ID");
+                }
+                _context.Movies.Remove(movie);
+                _context.SaveChanges();
             }
-            _context.Movies.Remove(movie);
-            _context.SaveChanges();
+            catch (System.Exception ex)
+            {
+                throw new System.Exception($"Error deleting movie with ID {id}: {ex.Message}");
+            }
         }
     }
 }

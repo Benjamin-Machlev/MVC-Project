@@ -14,12 +14,19 @@ namespace MoviesServer.CQRS.Queries
 
         public Movie? GetMovieById(int id)
         {
-            var movie = _context.Movies.Find(id);
-            if (movie == null)
+            try
             {
-                return null;
+                var movie = _context.Movies.Find(id);
+                if (movie == null)
+                {
+                    return null;
+                }
+                return movie;
             }
-            return movie;
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving movie with ID {id}: {ex.Message}");
+            }
         }
     }
 }

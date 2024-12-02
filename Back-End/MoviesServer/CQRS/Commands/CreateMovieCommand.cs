@@ -1,5 +1,4 @@
-﻿
-using MoviesServer.DataAccess;
+﻿using MoviesServer.DataAccess;
 using MoviesServer.Models;
 
 namespace MoviesServer.CQRS.Commands
@@ -15,8 +14,15 @@ namespace MoviesServer.CQRS.Commands
         }
         public void AddMovie(Movie movie)
         {
-             _context.Movies.Add(movie);
-            _context.SaveChanges();
+            try
+            {
+                _context.Movies.Add(movie);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding movie: {ex.Message}");
+            }
         }
     }
 }

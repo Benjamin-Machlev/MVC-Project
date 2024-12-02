@@ -39,44 +39,79 @@ namespace MoviesServer.Controllers
         [HttpGet]
         public ActionResult<List<Movie>> GetAllMovies()
         {
-            var movies = _getAllMoviesQuery.GetAllMovies();
-            return movies;
+            try
+            {
+                var movies = _getAllMoviesQuery.GetAllMovies();
+                return movies;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // GET: api/movies/5
         [HttpGet("{id}")]
         public ActionResult<Movie> GetMovie(int id)
         {
-            var movie = _getMovieByIdQuery.GetMovieById(id);
-            if (movie == null)
+            try
             {
-                return NotFound();
+                var movie = _getMovieByIdQuery.GetMovieById(id);
+                if (movie == null)
+                {
+                    return NotFound();
+                }
+                return movie;
             }
-            return movie;
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // POST: api/movies
         [HttpPost]
         public ActionResult<Movie> AddMovie(Movie movie)
         {
-            _createMovieCommand.AddMovie(movie);
-            return CreatedAtAction(nameof(GetMovie), new { id = movie.MovieID }, movie);
+            try
+            {
+                _createMovieCommand.AddMovie(movie);
+                return CreatedAtAction(nameof(GetMovie), new { id = movie.MovieID }, movie);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // PUT: api/movies/5
         [HttpPut("{id}")]
         public IActionResult UpdateMovie(int id, Movie movie)
         {
-            _updateMovieCommand.UpdateMovie(id, movie);
-            return NoContent();
+            try
+            {
+                _updateMovieCommand.UpdateMovie(id, movie);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // DELETE: api/movies/5
         [HttpDelete("{id}")]
         public IActionResult DeleteMovie(int id)
         {
-            _deleteMovieCommand.DeleteMovie(id);
-            return NoContent();
+            try
+            {
+                _deleteMovieCommand.DeleteMovie(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

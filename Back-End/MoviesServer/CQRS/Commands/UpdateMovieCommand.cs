@@ -13,12 +13,19 @@ namespace MoviesServer.CQRS.Commands
 
         public void UpdateMovie(int id, Movie movie)
         {
-            if (id != movie.MovieID)
+            try
             {
-                throw new System.Exception("Invalid movie ID");
+                if (id != movie.MovieID)
+                {
+                    throw new System.Exception("Invalid movie ID");
+                }
+                _context.Entry(movie).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                _context.SaveChanges();
             }
-            _context.Entry(movie).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating movie with ID {id}: {ex.Message}");
+            }
         }
     }
 }
