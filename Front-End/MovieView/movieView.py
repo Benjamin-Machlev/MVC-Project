@@ -262,14 +262,22 @@ class MovieView(QMainWindow):
             if event.type() == QEvent.Enter:
                 obj.setText(f"RATING: {movie.rating}/10\nGENRE: {movie.genre}")
                 obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128);")
+                obj.setCursor(Qt.CursorShape.PointingHandCursor)
+                obj.setIcon(QIcon())  # Clear the icon
+                return True  # Return True to indicate the event was handled
                 
             elif event.type() == QEvent.Leave:
                 obj.setText("")
                 obj.setStyleSheet("border: none;")
-    
-    
-    
-
+                obj.setCursor(Qt.CursorShape.ArrowCursor)
+                if validators.url(movie.image):
+                    image = QPixmap()
+                    image.loadFromData(requests.get(movie.image).content)
+                else:
+                    image = QPixmap(movie.image)
+                obj.setIcon(QIcon(image))  # Reset the icon
+                return True  # Return True to indicate the event was handled
+        return False  # Return False if the event was not handled
     
     def create_footer(self):
         footer_widget = QWidget()
