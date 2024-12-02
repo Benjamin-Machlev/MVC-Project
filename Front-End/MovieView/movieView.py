@@ -261,8 +261,8 @@ class MovieView(QMainWindow):
         movie = next((m for m in self.movies if m.movieID == movie_id), None)
         if isinstance(obj, QPushButton):
             if event.type() == QEvent.Enter:
-                obj.setText(f"RATING: {movie.rating}/10\nGENRE: {movie.genre}")
-                obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128);")
+                obj.setText(f"RATING:\n{movie.rating}/10\n\nGENRE:\n{movie.genre.replace(',', '\n')}")
+                obj.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 128); font-size: 16px;")
                 obj.setCursor(Qt.CursorShape.PointingHandCursor)
                 obj.setIcon(QIcon())  # Clear the icon
                 return True  # Return True to indicate the event was handled
