@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MoviesServer.CQRS.Commands;
 using MoviesServer.CQRS.Queries;
 using MoviesServer.DataAccess;
 using MoviesServer.Services;  // Ensure this namespace includes YtsService and ImaggaService
@@ -22,6 +23,10 @@ builder.Services.AddDbContext<MoviesContext>(options =>
 
 // Register the services with the DI container
 builder.Services.AddScoped<GetAllMoviesQuery>();
+builder.Services.AddScoped<GetMovieByIdQuery>();
+builder.Services.AddScoped<CreateMovieCommand>();
+builder.Services.AddScoped<UpdateMovieCommand>();
+builder.Services.AddScoped<DeleteMovieCommand>();
 
 // Register services with HttpClient
 builder.Services.AddHttpClient<YtsService>(client =>
