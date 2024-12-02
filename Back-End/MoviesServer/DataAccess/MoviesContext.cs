@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoviesServer.Models;
 
-namespace MoviesServer.Models
+namespace MoviesServer.DataAccess
 {
     public class MoviesContext : DbContext
     {
