@@ -1,7 +1,7 @@
 import requests
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout, QInputDialog  # Add this import
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout, QInputDialog, QScrollArea  # Add QScrollArea
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator, QPixmap
@@ -25,6 +25,7 @@ class AddMovieForm(QWidget):
         self.layout.addStretch()
         self.setup_buttons()
         self.layout.setAlignment(Qt.AlignCenter)
+        self.set_input_focus_policy()
 
     def setup_inputs(self, main_layout):
         basic_info_group = QGroupBox("Basic Info")
@@ -58,8 +59,10 @@ class AddMovieForm(QWidget):
 
         genre_group = QGroupBox("Genres")
         genre_group.setFixedWidth(500)
-        genre_group.setFixedHeight(170)
-        genre_layout = QGridLayout()
+        genre_scroll_area = QScrollArea(self)  # Add scroll area
+        genre_scroll_area.setWidgetResizable(True)
+        genre_widget = QWidget()
+        genre_layout = QGridLayout(genre_widget)
         
         self.genre_checkboxes = []
         genres = [
@@ -96,7 +99,10 @@ class AddMovieForm(QWidget):
             self.genre_checkboxes.append(checkbox)
             genre_layout.addWidget(checkbox, i // 3, i % 3)
         
-        genre_group.setLayout(genre_layout)
+        genre_scroll_area.setWidget(genre_widget)
+        genre_group_layout = QVBoxLayout(genre_group)
+        genre_group_layout.addWidget(genre_scroll_area)
+        genre_group.setLayout(genre_group_layout)
 
         additional_info_group = QGroupBox("Additional Info")
         additional_info_group.setFixedWidth(500)
@@ -229,3 +235,12 @@ class AddMovieForm(QWidget):
     def showEvent(self, event):
         super().showEvent(event)
         self.reset_form()
+
+    def set_input_focus_policy(self):
+        for input_field in [self.movie_title_input, self.movie_runtime_input]:
+            input_field.focusOutEvent = self.change_text_color
+
+    def change_text_color(self, event):
+        sender = self.sender()
+        sender.setStyleSheet("color: white;")
+        super(QLineEdit, sender).focusOutEvent(event)

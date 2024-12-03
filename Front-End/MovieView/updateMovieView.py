@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout
+    QTextEdit, QListWidget, QListWidgetItem, QGroupBox, QFormLayout, QSlider, QFileDialog, QComboBox, QCheckBox, QGridLayout, QScrollArea  # Add QScrollArea
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIntValidator, QPixmap
@@ -26,6 +26,7 @@ class UpdateMovieForm(QWidget):
         self.layout.addStretch()
         self.setup_buttons()
         self.layout.setAlignment(Qt.AlignCenter)
+        self.set_input_focus_policy()
 
     def setup_inputs(self, main_layout):
         # Group Basic Info
@@ -63,46 +64,29 @@ class UpdateMovieForm(QWidget):
         basic_info_group.setLayout(basic_layout)
 
         # Group Genres
-        genre_group = QGroupBox("Genres")  # Define genre_group here
+        genre_group = QGroupBox("Genres")
         genre_group.setFixedWidth(500)
-        genre_group.setFixedHeight(170)
-        genre_layout = QGridLayout()
+        genre_scroll_area = QScrollArea(self)  # Add scroll area
+        genre_scroll_area.setWidgetResizable(True)
+        genre_widget = QWidget()
+        genre_layout = QGridLayout(genre_widget)
         
         self.genre_checkboxes = []
         genres = [
-            "Action",
-            "Adventure",
-            "Animation",
-            "Biography",
-            "Comedy",
-            "Crime",
-            "Documentary",
-            "Drama",
-            "Family",
-            "Fantasy",
-            "Film-Noir",
-            "Game-Show",
-            "History",
-            "Horror",
-            "Music",
-            "Musical",
-            "Mystery",
-            "News",
-            "Reality-TV",
-            "Romance",
-            "Sci-Fi",
-            "Sport",
-            "Talk-Show",
-            "Thriller",
-            "War",
-            "Western"
+            "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
+            "Documentary", "Drama", "Family", "Fantasy", "Film-Noir", "Game-Show",
+            "History", "Horror", "Music", "Musical", "Mystery", "News", "Reality-TV",
+            "Romance", "Sci-Fi", "Sport", "Talk-Show", "Thriller", "War", "Western"
         ]
         for i, genre in enumerate(genres):
             checkbox = QCheckBox(genre, self)
             self.genre_checkboxes.append(checkbox)
-            genre_layout.addWidget(checkbox, i // 3, i % 3)  # Arrange in a grid with 3 columns
+            genre_layout.addWidget(checkbox, i // 3, i % 3)
         
-        genre_group.setLayout(genre_layout)
+        genre_scroll_area.setWidget(genre_widget)
+        genre_group_layout = QVBoxLayout(genre_group)
+        genre_group_layout.addWidget(genre_scroll_area)
+        genre_group.setLayout(genre_group_layout)
 
         # Group Additional Info
         additional_info_group = QGroupBox("Additional Info")
@@ -200,3 +184,12 @@ class UpdateMovieForm(QWidget):
 
     def go_back_to_single_movie(self):
         self.go_back_to_single_movie_signal.emit(self.movie)
+
+    def set_input_focus_policy(self):
+        for input_field in [self.movie_id_input, self.movie_title_input, self.movie_runtime_input]:
+            input_field.focusOutEvent = self.change_text_color
+
+    def change_text_color(self, event):
+        sender = self.sender()
+        sender.setStyleSheet("color: white;")
+        super(QLineEdit, sender).focusOutEvent(event)
