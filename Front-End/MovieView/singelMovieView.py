@@ -165,7 +165,7 @@ class SingleMovieView(QWidget):
         update_button = QPushButton("Update Movie Info")
         update_button.setFixedSize(200, 80)
         update_button.setStyleSheet(button_style)
-        update_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        update_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         update_button.setIcon(QIcon())  # Initially, no icon
         update_button.setLayoutDirection(Qt.RightToLeft)
         update_button.setObjectName("update_btn")  # Initially, no icon
@@ -175,7 +175,7 @@ class SingleMovieView(QWidget):
         delete_button = QPushButton("Delete Movie")
         delete_button.setFixedSize(200, 80)
         delete_button.setStyleSheet(button_style)
-        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         delete_button.setIcon(QIcon())
         delete_button.setLayoutDirection(Qt.RightToLeft)
         delete_button.setObjectName("del_btn")  # Initially, no icon
@@ -185,7 +185,7 @@ class SingleMovieView(QWidget):
         back_button = QPushButton("Back to Movie List")
         back_button.setFixedSize(200, 80)
         back_button.setStyleSheet(button_style)
-        back_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        back_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         back_button.setIcon(QIcon())
         back_button.setLayoutDirection(Qt.RightToLeft)
         back_button.setObjectName("back_btn")  # Initially, no icon
@@ -195,7 +195,7 @@ class SingleMovieView(QWidget):
         check_image_safety_button = QPushButton("Check Image Safety")
         check_image_safety_button.setFixedSize(200, 80)
         check_image_safety_button.setStyleSheet(button_style)
-        check_image_safety_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        check_image_safety_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         check_image_safety_button.setIcon(QIcon())
         check_image_safety_button.setLayoutDirection(Qt.RightToLeft)
         check_image_safety_button.setObjectName("check_btn")  # Initially, no icon

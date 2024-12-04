@@ -9,7 +9,7 @@ from id_manager import load_current_id, save_current_id
 import validators  # Add this import
 import os  # Add this import
 import random  # Add this import
-import json  # Add this import
+import json  
 
 class AddMovieForm(QWidget):
     add_movie_signal = Signal(dict)
@@ -25,13 +25,21 @@ class AddMovieForm(QWidget):
 
     def setup_ui(self):
         self.layout = QVBoxLayout(self)
-        self.setup_inputs(self.layout)
-        self.layout.addStretch()
-        self.setup_buttons()
-        self.layout.setAlignment(Qt.AlignCenter)
+        self.main_layout = QHBoxLayout()  # Main horizontal layout
+        self.layout.addLayout(self.main_layout)
         
+        self.left_layout = QVBoxLayout()  # Left vertical layout
+        self.right_layout = QVBoxLayout()  # Right vertical layout
+        
+        self.main_layout.addLayout(self.left_layout)
+        self.main_layout.addSpacing(10)  # Add small space between sections
+        self.main_layout.addLayout(self.right_layout)
+        self.main_layout.setAlignment(Qt.AlignCenter)  # Center the main layout
+        
+        self.setup_inputs()
+        self.layout.setAlignment(Qt.AlignCenter)
 
-    def setup_inputs(self, main_layout):
+    def setup_inputs(self):
         input_fields_style = """
             QLineEdit {
                 color: white;
@@ -47,6 +55,7 @@ class AddMovieForm(QWidget):
         basic_info_group = QGroupBox("Basic Info")
         basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
+        basic_layout.setVerticalSpacing(20)  # Add vertical spacing between fields
         
         self.movie_id_label = QLabel(f"{self.current_movie_id}", self)
         self.movie_id_label.setStyleSheet(input_fields_style)
@@ -65,6 +74,7 @@ class AddMovieForm(QWidget):
         self.movie_runtime_input.setStyleSheet(input_fields_style)
         
         self.movie_image_input = QPushButton("Upload Image", self)
+        self.movie_image_input.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         self.movie_image_input.clicked.connect(self.upload_image)
 
         self.image_path_label = QLabel(self)
@@ -76,6 +86,7 @@ class AddMovieForm(QWidget):
         basic_layout.addRow(QLabel('Image:'), self.movie_image_input)
 
         basic_info_group.setLayout(basic_layout)
+        self.left_layout.addWidget(basic_info_group)
 
         genre_group = QGroupBox("Genres")
         genre_group.setFixedWidth(500)
@@ -123,6 +134,7 @@ class AddMovieForm(QWidget):
         genre_group_layout = QVBoxLayout(genre_group)
         genre_group_layout.addWidget(genre_scroll_area)
         genre_group.setLayout(genre_group_layout)
+        self.right_layout.addWidget(genre_group)
 
         additional_info_group = QGroupBox("Additional Info")
         additional_info_group.setFixedWidth(500)
@@ -154,10 +166,48 @@ class AddMovieForm(QWidget):
         additional_layout.addRow(QLabel('Response:'), self.movie_response_input)
         
         additional_info_group.setLayout(additional_layout)
+        
+        additional_info_layout = QHBoxLayout()
+        additional_info_layout.setSpacing(20)  # Add space between widgets
+        additional_info_layout.setAlignment(Qt.AlignCenter)  # Center the layout
+        additional_info_layout.addWidget(additional_info_group)
+        
+        action_group = QGroupBox("ACTION")
+        action_group.setFixedWidth(200)  # Reduce the width
+        action_layout = QVBoxLayout()
+        action_layout.setContentsMargins(10, 0, 10, 0)  # Set smaller margins on the right and left
+        self.setup_buttons(action_layout)
+        action_group.setLayout(action_layout)
+        
+        additional_info_layout.addWidget(action_group)  # Move action_group here
 
-        self.layout.addWidget(basic_info_group)
-        self.layout.addWidget(genre_group)
-        self.layout.addWidget(additional_info_group)
+        self.layout.addLayout(additional_info_layout)
+
+    def setup_buttons(self, layout=None):
+        button_layout = QHBoxLayout() if layout is None else layout  # Ensure QHBoxLayout
+        button_layout.setSpacing(20)  # Add spacing between buttons for balance
+        self.add_button = QPushButton("Add Movie", self)
+        self.add_button.setFixedSize(160, 50)  # Increase button size
+        self.add_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        self.add_button.clicked.connect(self.add_movie)  # Reconnect signal
+        
+        back_button = QPushButton("Back to Movie List", self)
+        back_button.setFixedSize(160, 50)  # Increase button size
+        back_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        back_button.clicked.connect(self.go_back)  # Reconnect signal
+        
+        fetch_button = QPushButton("Fetch Movie Data", self)  # New button
+        fetch_button.setFixedSize(160, 50)  # Increase button size
+        fetch_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
+        fetch_button.clicked.connect(self.fetch_movie_data)  # Connect to new method
+
+        button_layout.addWidget(self.add_button)
+        button_layout.addWidget(back_button)
+        button_layout.addWidget(fetch_button)  # Add new button to layout
+        button_layout.setAlignment(Qt.AlignCenter)
+
+        if layout is None:
+            self.layout.addLayout(button_layout)
 
     def upload_image(self):
         file_dialog = QFileDialog(self)
@@ -171,7 +221,7 @@ class AddMovieForm(QWidget):
             with open(file_path, 'rb') as fsrc, open(new_path, 'wb') as fdst:
                 fdst.write(fsrc.read())
             self.image_path_label.setText(new_path)
-            self.display_image(new_path)
+            # Removed the call to display_image
 
     def display_image(self, image_path):
         if validators.url(image_path):
@@ -181,33 +231,15 @@ class AddMovieForm(QWidget):
             image = QPixmap(image_path)
         self.movie_image.setPixmap(image.scaled(200, 300, Qt.KeepAspectRatio))
 
-    def setup_buttons(self):
-        button_layout = QHBoxLayout()
-        self.add_button = QPushButton("Add Movie", self)
-        self.add_button.clicked.connect(self.add_movie)
-        
-        back_button = QPushButton("Back to Movie List", self)
-        back_button.clicked.connect(self.go_back)
-
-        fetch_button = QPushButton("Fetch Movie Data", self)  # New button
-        fetch_button.clicked.connect(self.fetch_movie_data)  # Connect to new method
-
-        button_layout.addWidget(self.add_button)
-        button_layout.addWidget(back_button)
-        button_layout.addWidget(fetch_button)  # Add new button to layout
-        button_layout.setAlignment(Qt.AlignCenter)
-
-        self.layout.addLayout(button_layout)
-
     def load_api_movie_ids(self):
         try:
-            with open('c:/Users/User/source/repos/MVC - Project/id\'s_from_api.json', 'r') as file:
+            with open('id\'s_from_api.json', 'r') as file:
                 return set(sorted(json.load(file)))  # Sort IDs when loading
         except FileNotFoundError:
             return set()
 
     def save_api_movie_ids(self):
-        with open('c:/Users/User/source/repos/MVC - Project/id\'s_from_api.json', 'w') as file:
+        with open('id\'s_from_api.json', 'w') as file:
             json.dump(sorted(list(self.api_movie_ids)), file)  # Sort IDs when saving
 
     def fetch_movie_data(self):
@@ -233,9 +265,12 @@ class AddMovieForm(QWidget):
         self.movie_rating_input.setValue(int(movie_data["rating"]*10))
         self.movie_description_input.setText(movie_data["description"])
         self.movie_response_input.setText("\n".join(movie_data["responses"]))
-        self.display_image(movie_data["image"])
+        # Removed the call to display_image
 
     def add_movie(self):
+        if not self.validate_fields():
+            return
+
         if self.movie_id_label.text().isdigit() and int(self.movie_id_label.text()) < 100000:
             movie_id = int(self.movie_id_label.text())
         else:
@@ -244,7 +279,6 @@ class AddMovieForm(QWidget):
         
         runtime_text = self.movie_runtime_input.text()
         if not runtime_text.isdigit():
-            # Handle the error or set a default value
             runtime_text = "0"
 
         movie_data = {
@@ -264,6 +298,47 @@ class AddMovieForm(QWidget):
         self.add_movie_signal.emit(movie_data)
         self.reset_form()
         self.go_back_signal.emit()
+
+    def validate_fields(self):
+        if not self.movie_title_input.text().strip():
+            self.movie_title_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_title_input.setStyleSheet("")
+
+        if not self.movie_runtime_input.text().strip():
+            self.movie_runtime_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_runtime_input.setStyleSheet("")
+
+        if not self.movie_description_input.toPlainText().strip():
+            self.movie_description_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_description_input.setStyleSheet("")
+
+        if not self.image_path_label.text().strip():
+            self.image_path_label.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.image_path_label.setStyleSheet("")
+
+        if not self.movie_response_input.toPlainText().strip():
+            self.movie_response_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_response_input.setStyleSheet("")
+
+        if not any(checkbox.isChecked() for checkbox in self.genre_checkboxes):
+            for checkbox in self.genre_checkboxes:
+                checkbox.setStyleSheet("color: red;")
+            return False
+        else:
+            for checkbox in self.genre_checkboxes:
+                checkbox.setStyleSheet("")
+
+        return True
 
     def reset_form(self):
         if self.movie_id_label.text().isdigit() and int(self.movie_id_label.text()) >= 100000:

@@ -13,7 +13,8 @@ from PySide6.QtWidgets import (
     QFrame,
     QSpacerItem,
     QGridLayout,
-    QScrollArea
+    QScrollArea,
+    QComboBox  # Add this import
 )
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, QSize, QTimer, QEvent
@@ -160,7 +161,7 @@ class MovieView(QMainWindow):
         self.no_results_label.setFixedHeight(30)  # Set height to 30px
 
         self.search_button = QPushButton()
-        self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.search_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         self.search_button.setFixedSize(50, 40)  # Increase height to match the search input
         search_icon = QIcon(r"Front-End\movies img\search.svg")
         self.search_button.setIcon(search_icon)
@@ -184,14 +185,71 @@ class MovieView(QMainWindow):
         self.top_bar_layout.addStretch(1)  # Add stretch after the search container
 
         self.top_bar_layout.addStretch(1)
+
+        self.create_filters()  # Ensure filters are created in the top bar
+
         self.add_button = QPushButton()
-        self.add_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.add_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         self.add_button.setFixedHeight(30)  # Set the height to match the search input
         add_icon = QIcon(r"Front-End\movies img\add.svg")
         self.add_button.setIcon(add_icon)
         self.add_button.setIconSize(QSize(24, 24))
-        self.top_bar_layout.addWidget(self.add_button, alignment=Qt.AlignRight)  # Align the add button to the right
         self.add_button.clicked.connect(self.show_add_movie_form)
+
+        self.top_bar_layout.addWidget(self.add_button, alignment=Qt.AlignRight)  # Align the add button to the right
+
+    def create_filters(self):
+        filter_layout = QHBoxLayout()  # Create a new horizontal layout for the filters
+        filter_layout.setContentsMargins(0, 0, 20, 0)  # Add left margin to move filters to the left
+
+        self.year_filter = QComboBox()
+        self.year_filter.addItem("All")
+        years = sorted(set(movie.release_year for movie in self.movies))
+        for year in years:
+            self.year_filter.addItem(str(year))
+        self.year_filter.currentIndexChanged.connect(self.filter_movies)
+
+        self.genre_filter = QComboBox()
+        self.genre_filter.addItem("All")
+        genres = sorted(set(genre for movie in self.movies for genre in movie.genre.split(',')))
+        for genre in genres:
+            self.genre_filter.addItem(genre)
+        self.genre_filter.currentIndexChanged.connect(self.filter_movies)
+
+        self.rating_filter = QComboBox()
+        self.rating_filter.addItem("All")
+        for i in range(1, 11):
+            self.rating_filter.addItem(f"{i} - {i+1}")
+        self.rating_filter.currentIndexChanged.connect(self.filter_movies)
+
+        filter_layout.addWidget(self.year_filter)
+        filter_layout.addWidget(self.genre_filter)
+        filter_layout.addWidget(self.rating_filter)
+
+        self.top_bar_layout.addLayout(filter_layout)  # Add the filter layout to the top bar layout
+
+    def filter_movies(self):
+        selected_year = self.year_filter.currentText()
+        selected_genre = self.genre_filter.currentText()
+        selected_rating = self.rating_filter.currentText()
+
+        if selected_year == "All" and selected_genre == "All" and selected_rating == "All":
+            self.update_movie_list(self.movies)
+            return
+
+        filtered_movies = self.movies
+        if selected_year != "All":
+            filtered_movies = [movie for movie in filtered_movies if str(movie.release_year) == selected_year]
+        if selected_genre != "All":
+            filtered_movies = [movie for movie in filtered_movies if selected_genre in movie.genre.split(',')]
+        if selected_rating != "All":
+            try:
+                min_rating, max_rating = map(int, selected_rating.split(' - '))
+                filtered_movies = [movie for movie in filtered_movies if min_rating <= movie.rating < max_rating]
+            except ValueError:
+                pass  # Handle the case where selected_rating is not in the expected format
+
+        self.update_movie_list(filtered_movies)
 
     def create_movie_list(self, movies):
         self.movie_list_widget = QWidget(self)
@@ -303,7 +361,6 @@ class MovieView(QMainWindow):
             self.search_input.setEnabled(False)
 
     def update_movie_list(self, movies):
-        self.movies = movies
         self.create_movie_list(movies)
         self.stacked_widget.setCurrentWidget(self.movie_list_widget)
 

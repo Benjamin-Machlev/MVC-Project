@@ -22,13 +22,22 @@ class UpdateMovieForm(QWidget):
     
     def setup_ui(self):
         self.layout = QVBoxLayout(self)
-        self.setup_inputs(self.layout)
-        self.layout.addStretch()
-        self.setup_buttons()
+        self.main_layout = QHBoxLayout()  # Main horizontal layout
+        self.layout.addLayout(self.main_layout)
+        
+        self.left_layout = QVBoxLayout()  # Left vertical layout
+        self.right_layout = QVBoxLayout()  # Right vertical layout
+        
+        self.main_layout.addLayout(self.left_layout)
+        self.main_layout.addSpacing(10)  # Add small space between sections
+        self.main_layout.addLayout(self.right_layout)
+        self.main_layout.setAlignment(Qt.AlignCenter)  # Center the main layout
+        
+        self.setup_inputs()
         self.layout.setAlignment(Qt.AlignCenter)
         
 
-    def setup_inputs(self, main_layout):
+    def setup_inputs(self):
         input_fields_style = """
             QLineEdit {
                 color: white;
@@ -44,6 +53,7 @@ class UpdateMovieForm(QWidget):
         basic_info_group = QGroupBox("Basic Info")
         basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
+        basic_layout.setVerticalSpacing(20)  # Add vertical spacing between fields
         
         self.movie_id_input = QLineEdit(self)
         self.movie_id_input.setValidator(QIntValidator(1, 9999999, self))
@@ -77,6 +87,7 @@ class UpdateMovieForm(QWidget):
         basic_layout.addRow(QLabel('Image:'), self.movie_image_input)
 
         basic_info_group.setLayout(basic_layout)
+        self.left_layout.addWidget(basic_info_group)
 
         # Group Genres
         genre_group = QGroupBox("Genres")
@@ -102,6 +113,7 @@ class UpdateMovieForm(QWidget):
         genre_group_layout = QVBoxLayout(genre_group)
         genre_group_layout.addWidget(genre_scroll_area)
         genre_group.setLayout(genre_group_layout)
+        self.right_layout.addWidget(genre_group)
 
         # Group Additional Info
         additional_info_group = QGroupBox("Additional Info")
@@ -114,7 +126,6 @@ class UpdateMovieForm(QWidget):
         self.movie_rating_input.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.movie_rating_input.setTickInterval(10)
         self.movie_rating_input.setSingleStep(1)
-        #self.movie_rating_input.setStyleSheet()
         self.movie_rating_input.valueChanged.connect(self.update_rating_label)
         
         self.rating_label = QLabel("1.0", self)
@@ -129,10 +140,22 @@ class UpdateMovieForm(QWidget):
         additional_layout.addRow(QLabel('Description:'), self.movie_description_input)
         
         additional_info_group.setLayout(additional_layout)
+        
+        additional_info_layout = QHBoxLayout()
+        additional_info_layout.setSpacing(20)  # Add space between widgets
+        additional_info_layout.setAlignment(Qt.AlignCenter)  # Center the layout
+        additional_info_layout.addWidget(additional_info_group)
+        
+        action_group = QGroupBox("ACTION")
+        action_group.setFixedWidth(200)  # Reduce the width
+        action_layout = QVBoxLayout()
+        action_layout.setContentsMargins(10, 0, 10, 0)  # Set smaller margins on the right and left
+        self.setup_buttons(action_layout)
+        action_group.setLayout(action_layout)
+        
+        additional_info_layout.addWidget(action_group)  # Move action_group here
 
-        self.layout.addWidget(basic_info_group)
-        self.layout.addWidget(genre_group)
-        self.layout.addWidget(additional_info_group)
+        self.layout.addLayout(additional_info_layout)
 
     def populate_fields(self):
         self.movie_id_input.setText(str(self.movie.movieID))
@@ -160,25 +183,35 @@ class UpdateMovieForm(QWidget):
                 fdst.write(fsrc.read())
             self.image_path_label.setText(new_path)
 
-    def setup_buttons(self):
-        button_layout = QHBoxLayout()
+    def setup_buttons(self, layout=None):
+        button_layout = layout if layout else QHBoxLayout()
         self.update_button = QPushButton("Update Movie", self)
+        self.update_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         self.update_button.clicked.connect(self.update_movie)
+        self.update_button.setFixedSize(160, 50)
         
         back_button = QPushButton("Back to Movie List", self)
+        back_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         back_button.clicked.connect(self.go_back)
+        back_button.setFixedSize(160, 50)
 
-        back_to_single_movie_button = QPushButton("Back to Single Movie View", self)
+        back_to_single_movie_button = QPushButton("Back to The Movie", self)
+        back_to_single_movie_button.setCursor(Qt.CursorShape.PointingHandCursor)  # Set cursor
         back_to_single_movie_button.clicked.connect(self.go_back_to_single_movie)
+        back_to_single_movie_button.setFixedSize(160, 50)
 
         button_layout.addWidget(self.update_button)
         button_layout.addWidget(back_button)
         button_layout.addWidget(back_to_single_movie_button)
         button_layout.setAlignment(Qt.AlignCenter)
 
-        self.layout.addLayout(button_layout)
+        if layout is None:
+            self.layout.addLayout(button_layout)
 
     def update_movie(self):
+        if not self.validate_fields():
+            return
+
         movie_data = {
             "movie_id": self.movie_id_input.text(),
             "title": self.movie_title_input.text(),
@@ -192,6 +225,41 @@ class UpdateMovieForm(QWidget):
         }
         self.update_movie_signal.emit(movie_data)
         self.go_back_signal.emit()  # Return to movie list after updating
+
+    def validate_fields(self):
+        if not self.movie_title_input.text().strip():
+            self.movie_title_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_title_input.setStyleSheet("")
+
+        if not self.movie_runtime_input.text().strip():
+            self.movie_runtime_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_runtime_input.setStyleSheet("")
+
+        if not self.movie_description_input.toPlainText().strip():
+            self.movie_description_input.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.movie_description_input.setStyleSheet("")
+
+        if not self.image_path_label.text().strip():
+            self.image_path_label.setStyleSheet("border: 1px solid red;")
+            return False
+        else:
+            self.image_path_label.setStyleSheet("")
+
+        if not any(checkbox.isChecked() for checkbox in self.genre_checkboxes):
+            for checkbox in self.genre_checkboxes:
+                checkbox.setStyleSheet("color: red;")
+            return False
+        else:
+            for checkbox in self.genre_checkboxes:
+                checkbox.setStyleSheet("")
+
+        return True
 
     def update_rating_label(self, value):
         self.rating_label.setText(f"{value / 10:.1f}")
