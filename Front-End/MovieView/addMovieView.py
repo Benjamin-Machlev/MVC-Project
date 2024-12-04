@@ -25,7 +25,7 @@ class AddMovieForm(QWidget):
         self.layout.addStretch()
         self.setup_buttons()
         self.layout.setAlignment(Qt.AlignCenter)
-        self.set_input_focus_policy()
+        
 
     def setup_inputs(self, main_layout):
         basic_info_group = QGroupBox("Basic Info")
@@ -235,12 +235,3 @@ class AddMovieForm(QWidget):
     def showEvent(self, event):
         super().showEvent(event)
         self.reset_form()
-
-    def set_input_focus_policy(self):
-        for input_field in [self.movie_title_input, self.movie_runtime_input]:
-            input_field.focusOutEvent = self.change_text_color
-
-    def change_text_color(self, event):
-        sender = self.sender()
-        sender.setStyleSheet("color: white;")
-        super(QLineEdit, sender).focusOutEvent(event)
