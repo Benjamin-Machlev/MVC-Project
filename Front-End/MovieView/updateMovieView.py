@@ -19,7 +19,7 @@ class UpdateMovieForm(QWidget):
         self.setup_ui()
         if self.movie:
             self.populate_fields()
-
+    
     def setup_ui(self):
         self.layout = QVBoxLayout(self)
         self.setup_inputs(self.layout)
@@ -29,6 +29,17 @@ class UpdateMovieForm(QWidget):
         
 
     def setup_inputs(self, main_layout):
+        input_fields_style = """
+            QLineEdit {
+                color: white;
+            }
+            QTextEdit{
+                color: white;
+            }
+            QComboBox{
+                color: white;
+            }
+        """
         # Group Basic Info
         basic_info_group = QGroupBox("Basic Info")
         basic_info_group.setFixedWidth(500)
@@ -38,16 +49,20 @@ class UpdateMovieForm(QWidget):
         self.movie_id_input.setValidator(QIntValidator(1, 9999999, self))
         self.movie_id_input.setPlaceholderText('Enter movie ID')
         self.movie_id_input.setReadOnly(True)
+        self.movie_id_input.setStyleSheet(input_fields_style)
         
         self.movie_title_input = QLineEdit(self)
         self.movie_title_input.setPlaceholderText('Enter movie title')
+        self.movie_title_input.setStyleSheet(input_fields_style)
         
         self.movie_release_year_input = QComboBox(self)
         self.movie_release_year_input.addItems([str(year) for year in range(1900, 2026)])
+        self.movie_release_year_input.setStyleSheet(input_fields_style)
         
         self.movie_runtime_input = QLineEdit(self)
         self.movie_runtime_input.setValidator(QIntValidator(1, 999, self))
         self.movie_runtime_input.setPlaceholderText('Enter movie runtime')
+        self.movie_runtime_input.setStyleSheet(input_fields_style)
         
         self.movie_image_input = QPushButton("Upload Image", self)
         self.movie_image_input.clicked.connect(self.upload_image)
@@ -99,6 +114,7 @@ class UpdateMovieForm(QWidget):
         self.movie_rating_input.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.movie_rating_input.setTickInterval(10)
         self.movie_rating_input.setSingleStep(1)
+        #self.movie_rating_input.setStyleSheet()
         self.movie_rating_input.valueChanged.connect(self.update_rating_label)
         
         self.rating_label = QLabel("1.0", self)
@@ -106,6 +122,7 @@ class UpdateMovieForm(QWidget):
         self.movie_description_input = QTextEdit(self)
         self.movie_description_input.setPlaceholderText('Enter movie description')
         self.movie_description_input.setFixedHeight(50)
+        self.movie_description_input.setStyleSheet(input_fields_style)
 
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
         additional_layout.addRow(self.rating_label)

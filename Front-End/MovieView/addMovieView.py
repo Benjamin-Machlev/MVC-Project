@@ -28,21 +28,37 @@ class AddMovieForm(QWidget):
         
 
     def setup_inputs(self, main_layout):
+        input_fields_style = """
+            QLineEdit {
+                color: white;
+            }
+            QTextEdit{
+                color: white;
+            }
+            QComboBox{
+                color: white;
+            }
+        """
+        # Group Basic Info
         basic_info_group = QGroupBox("Basic Info")
         basic_info_group.setFixedWidth(500)
         basic_layout = QFormLayout()
         
         self.movie_id_label = QLabel(f"{self.current_movie_id}", self)
+        self.movie_id_label.setStyleSheet(input_fields_style)
         
         self.movie_title_input = QLineEdit(self)
         self.movie_title_input.setPlaceholderText('Enter movie title')
+        self.movie_title_input.setStyleSheet(input_fields_style)
         
         self.movie_release_year_input = QComboBox(self)
         self.movie_release_year_input.addItems([str(year) for year in range(1900, 2026)])
+        self.movie_release_year_input.setStyleSheet(input_fields_style)
         
         self.movie_runtime_input = QLineEdit(self)
         self.movie_runtime_input.setValidator(QIntValidator(1, 999, self))
         self.movie_runtime_input.setPlaceholderText('Enter movie runtime')
+        self.movie_runtime_input.setStyleSheet(input_fields_style)
         
         self.movie_image_input = QPushButton("Upload Image", self)
         self.movie_image_input.clicked.connect(self.upload_image)
@@ -121,10 +137,12 @@ class AddMovieForm(QWidget):
         self.movie_description_input = QTextEdit(self)
         self.movie_description_input.setPlaceholderText('Enter movie description')
         self.movie_description_input.setFixedHeight(50)
+        self.movie_description_input.setStyleSheet(input_fields_style)
 
         self.movie_response_input = QTextEdit(self)
         self.movie_response_input.setPlaceholderText('Enter movie response')
         self.movie_response_input.setFixedHeight(50)
+        self.movie_response_input.setStyleSheet(input_fields_style)
 
         additional_layout.addRow(QLabel('Rating:'), self.movie_rating_input)
         additional_layout.addRow(self.rating_label)
