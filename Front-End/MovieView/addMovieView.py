@@ -17,6 +17,7 @@ class AddMovieForm(QWidget):
         super().__init__(parent)
         self.parent = parent
         self.current_movie_id = load_current_id()
+        self.movie_image = QLabel(self)  # Initialize movie_image as a QLabel
         self.setup_ui()
 
     def setup_ui(self):
