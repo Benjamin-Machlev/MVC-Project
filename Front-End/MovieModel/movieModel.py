@@ -22,7 +22,7 @@ class MovieModel:
             self.movies = []
 
     def add_movie(self, movie_data):
-        print(Fore.GREEN + f"Model.add_movie: Sending add request with data: {movie_data}")  # Debug print
+        #print(Fore.GREEN + f"Model.add_movie: Sending add request with data: {movie_data}")  # Debug print
         movie_data["releaseYear"] = int(movie_data["releaseYear"])  # Ensure this matches the backend expectation
         movie_data["rating"] = float(movie_data["rating"])  # Ensure this matches the backend expectation
         movie_data["runtime"] = int(movie_data["runtime"])  # Ensure this matches the backend expectation
@@ -30,7 +30,7 @@ class MovieModel:
 
         response = requests.post("http://localhost:5156/api/movies", json=movie_data)
         print(Fore.GREEN + f"Model.add_movie: Received response: {response.status_code}")  # Debug print
-        print(Fore.GREEN + f"Model.add_movie: Response content: {response.content}")  # Debug print
+        #print(Fore.GREEN + f"Model.add_movie: Response content: {response.content}")  # Debug print
         if response.status_code == 201:
             movie = Movie(
                 movie_data["movieID"], movie_data["title"], movie_data["releaseYear"], movie_data["Genre"],
@@ -41,7 +41,8 @@ class MovieModel:
             print("Movie added successfully")
             # Verify the addition by fetching the movie directly from the server
             added_movie_from_server = self.fetch_movie_from_server(movie_data["movieID"])
-            print(f"Added movie from server: {added_movie_from_server}")
+            #print(f"Added movie from server: {added_movie_from_server}")
+            print(f"Added movie ID: {movie.movieID}, Title: {movie.title}")
         else:
             print(f"Failed to add movie: {response.status_code}")
             try:
