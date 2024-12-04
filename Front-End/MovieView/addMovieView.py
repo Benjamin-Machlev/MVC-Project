@@ -8,6 +8,8 @@ from PySide6.QtGui import QIntValidator, QPixmap
 from id_manager import load_current_id, save_current_id
 import validators  # Add this import
 import os  # Add this import
+import random  # Add this import
+import json  # Add this import
 
 class AddMovieForm(QWidget):
     add_movie_signal = Signal(dict)
@@ -18,6 +20,7 @@ class AddMovieForm(QWidget):
         self.parent = parent
         self.current_movie_id = load_current_id()
         self.movie_image = QLabel(self)  # Initialize movie_image as a QLabel
+        self.api_movie_ids = self.load_api_movie_ids()  # Load API movie IDs from JSON
         self.setup_ui()
 
     def setup_ui(self):
@@ -196,12 +199,31 @@ class AddMovieForm(QWidget):
 
         self.layout.addLayout(button_layout)
 
+    def load_api_movie_ids(self):
+        try:
+            with open('c:/Users/User/source/repos/MVC - Project/id\'s_from_api.json', 'r') as file:
+                return set(sorted(json.load(file)))  # Sort IDs when loading
+        except FileNotFoundError:
+            return set()
+
+    def save_api_movie_ids(self):
+        with open('c:/Users/User/source/repos/MVC - Project/id\'s_from_api.json', 'w') as file:
+            json.dump(sorted(list(self.api_movie_ids)), file)  # Sort IDs when saving
+
     def fetch_movie_data(self):
-        movie_id = self.movie_id_label.text()
-        if movie_id:
-            self.parent.controller.fetch_movie_data(movie_id)  # Call controller method
+        movie_id = self.generate_unique_api_id()  # Generate unique ID for API movie
+        self.api_movie_ids.add(movie_id)  # Add the generated ID to the set
+        self.save_api_movie_ids()  # Save the updated set to the JSON file
+        self.parent.controller.fetch_movie_data(movie_id)  # Call controller method
+
+    def generate_unique_api_id(self):
+        while True:
+            movie_id = random.randint(1, 60000)
+            if movie_id not in self.api_movie_ids:
+                return movie_id
 
     def fill_form(self, movie_data):  # New method to fill the form
+        self.movie_id_label.setText(str(movie_data['movieID']))  # Set ID from API
         self.movie_title_input.setText(movie_data["title"])
         self.movie_release_year_input.setCurrentText(str(movie_data["releaseYear"]))
         self.movie_runtime_input.setText(str(movie_data["runtime"]))
@@ -214,26 +236,40 @@ class AddMovieForm(QWidget):
         self.display_image(movie_data["image"])
 
     def add_movie(self):
-        self.current_movie_id = load_current_id()
+        if self.movie_id_label.text().isdigit() and int(self.movie_id_label.text()) < 100000:
+            movie_id = int(self.movie_id_label.text())
+        else:
+            self.current_movie_id = load_current_id()
+            movie_id = self.current_movie_id
+        
+        runtime_text = self.movie_runtime_input.text()
+        if not runtime_text.isdigit():
+            # Handle the error or set a default value
+            runtime_text = "0"
+
         movie_data = {
-            "movieID": self.current_movie_id,
+            "movieID": movie_id,
             "title": self.movie_title_input.text(),
             "releaseYear": self.movie_release_year_input.currentText(),
-            "runtime": self.movie_runtime_input.text(),
+            "runtime": runtime_text,
             "genres": [checkbox.text() for checkbox in self.genre_checkboxes if checkbox.isChecked()],
             "rating": self.movie_rating_input.value() / 10,
             "description": self.movie_description_input.toPlainText(),
             "responses": [self.movie_response_input.toPlainText()],
             "image": self.image_path_label.text()
         }
-        self.current_movie_id += 1
-        save_current_id(self.current_movie_id)
+        if movie_id >= 100000:
+            self.current_movie_id += 1
+            save_current_id(self.current_movie_id)
         self.add_movie_signal.emit(movie_data)
         self.reset_form()
         self.go_back_signal.emit()
 
     def reset_form(self):
-        self.movie_id_label.setText(f"{self.current_movie_id}")
+        if self.movie_id_label.text().isdigit() and int(self.movie_id_label.text()) >= 100000:
+            self.movie_id_label.setText(f"{self.current_movie_id}")
+        else:
+            self.movie_id_label.setText(f"{load_current_id()}")  # Reset to next sequential ID
         self.movie_title_input.clear()
         self.movie_release_year_input.setCurrentIndex(0)
         self.movie_runtime_input.clear()
